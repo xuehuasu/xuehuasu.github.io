@@ -175,7 +175,21 @@
 <p>卷组可以解决这个情况</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lsblk</span><br><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part</span><br><span class="line">...</span><br><span class="line">├─sdb5 8:21 0 1G 0 part</span><br><span class="line">└─sdb6 8:22 0 2G 0 part</span><br><span class="line"></span><br><span class="line"># 创建物理卷</span><br><span class="line">pvcreate /dev/sdb1</span><br><span class="line">pvcreate /dev/sdb5</span><br><span class="line">pvcreate /dev/sdb6</span><br><span class="line"></span><br><span class="line"># 创建卷组</span><br><span class="line">vgcreate vg156 /dev/sdb1 /dev/sdb5 /dev/sdb6</span><br><span class="line"># 已有的卷组可以添加物理卷</span><br><span class="line">vgextend vg156 /dev/sdb2</span><br><span class="line"></span><br><span class="line"># 创建lvm</span><br><span class="line">lvcreate -n lv156 -L 1G vg156</span><br><span class="line"></span><br><span class="line">lsblk</span><br><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part</span><br><span class="line">...</span><br><span class="line">├─sdb5 8:21 0 1G 0 part</span><br><span class="line">└─sdb6 8:22 0 2G 0 part</span><br><span class="line">└─vg156-lv156 253:2 0 1G 0 lvm</span><br><span class="line"></span><br><span class="line"># 可以随时给lvm扩容</span><br><span class="line">lvextend -L 3G /dev/vg156/lv156</span><br><span class="line"></span><br><span class="line">lsblk</span><br><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part</span><br><span class="line">│ └─vg156-lv156 253:2 0 3G 0 lvm</span><br><span class="line">...</span><br><span class="line">├─sdb5 8:21 0 1G 0 part</span><br><span class="line">│ └─vg156-lv156 253:2 0 3G 0 lvm</span><br><span class="line">└─sdb6 8:22 0 2G 0 part</span><br><span class="line">└─vg156-lv156 253:2 0 3G 0 lvm</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-]]></content>
+<div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: 'linux1', // 可选。默认为 location.href
+  owner: 'xuehuasu',
+  repo: 'xuehuasu.github.io',
+  oauth: {
+    client_id: 'Ov23ctteY5rA6HskBCFV',
+    client_secret: '2b7f82ef23a3a69db4bf9f59d8ee02836ea2129f',
+  },
+})
+gitment.render('container')
+</script>]]></content>
       <categories>
         <category>linux</category>
         <category>存储</category>
