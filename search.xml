@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>VM初始化linux网络配置</title>
+    <url>/2024/05/30/VM%E5%88%9D%E5%A7%8B%E5%8C%96linux%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<p>每次建虚机都先配半天网络，记录下脚本来直接一键解决</p>
+<span id="more"></span>
+<p>固定IP配置时有坑，一般认为网关是1，但是VM默认是2，可以通过<code>ip route</code>查看默认网关后，再固定ip</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">~# ip route</span><br><span class="line">default via 192.168.76.2 dev ens33 proto static </span><br></pre></td></tr></table></figure>
+<p>可以看到默认网关是<code>192.168.76.2</code></p>
+<p>现在正式开始，先声明几个临时变量</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo su</span><br><span class="line"># 指定ip</span><br><span class="line">ip=192.168.137.123</span><br><span class="line"># 网关</span><br><span class="line">gw=192.168.137.2</span><br><span class="line"># 网卡名称，可通过ip addr查看</span><br><span class="line">NC=ens160</span><br></pre></td></tr></table></figure>
+<p>执行脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 清华源</span><br><span class="line">rm /etc/apt/sources.list</span><br><span class="line">cat &gt; /etc/apt/sources.list &lt;&lt; EOF</span><br><span class="line"># 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse</span><br><span class="line"># deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse</span><br><span class="line"># deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse</span><br><span class="line">deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse</span><br><span class="line"># deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse</span><br><span class="line"># deb-src http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse</span><br><span class="line"></span><br><span class="line"># 预发布软件源，不建议启用</span><br><span class="line"># deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse</span><br><span class="line"># # deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">apt-get update -y</span><br><span class="line"></span><br><span class="line"># 固定ip</span><br><span class="line">rm /etc/netplan/00-installer-config.yaml</span><br><span class="line">cat &gt;&gt; /etc/netplan/00-installer-config.yaml  &lt;&lt; EOF</span><br><span class="line">network:</span><br><span class="line">  ethernets:</span><br><span class="line">    $&#123;NC&#125;:</span><br><span class="line">      dhcp4: no</span><br><span class="line">      addresses:</span><br><span class="line">        - $&#123;ip&#125;/24</span><br><span class="line">      nameservers:</span><br><span class="line">        addresses: [$&#123;gw&#125;]</span><br><span class="line">      routes:</span><br><span class="line">        - to: default</span><br><span class="line">          via: $&#123;gw&#125;</span><br><span class="line">  version: 2</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">netplan apply</span><br><span class="line"></span><br><span class="line"># 允许服务器被root身份连接</span><br><span class="line">cat &gt;&gt; /etc/ssh/sshd_config &lt;&lt; EOF </span><br><span class="line">PermitRootLogin yes</span><br><span class="line">PermitEmptyPasswords yes</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">systemctl reload sshd</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>linux</category>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>网络</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>linux磁盘管理</title>
+    <url>/2024/05/30/linux%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<p>一文教会你怎么管理磁盘</p>
+<span id="more"></span>
+<h1 id="linux磁盘管理"><a href="#linux磁盘管理" class="headerlink" title="linux磁盘管理"></a>linux磁盘管理</h1><h2 id="1-为什么要分区"><a href="#1-为什么要分区" class="headerlink" title="1 为什么要分区"></a>1 为什么要分区</h2><p><strong>易于管理和使用</strong></p>
+<p>比如说我们把磁盘分了sda1、sda2、sda3、sda4盘，我们假设sda1盘为系统盘，其他的比如说游戏、办公、软件盘，电脑搜索文件时只需要在相对应的分区搜索就可以了，没必要进行全盘搜索。大大节省了寻找文件的时间<br><a href="https://wenku.baidu.com/view/0f96c3daa58da0116c1749bc.html?_wkts_=1680438097877">2-SAT 解法浅析</a><br><strong>有利于数据的安全</strong></p>
+<p>通过分区可以降低数据损失的风险。出现硬盘坏道、错误操作、重装系统都有可能造成数据损失，如果分区了，那么我们就可以将损失最小化。</p>
+<h2 id="2-相关概念"><a href="#2-相关概念" class="headerlink" title="2 相关概念"></a>2 相关概念</h2><p><strong>磁盘</strong> Disk 计算机的外部存储器设备</p>
+<p><strong>分区</strong> Disk Partition 分区是在磁盘上划分出来的一块独立的区域</p>
+<p>主分区（Primary Partition）：主分区是硬盘的启动分区，它是独立的，在一个物理磁盘(disk)上，最多只能有四个主分区</p>
+<p>扩展分区（Extended Partition）：扩展分区是除主分区外，硬盘上剩下的空间所建立起来的分区。扩展分区不能直接使用，它需要以逻辑分区的方式来使用，所以说扩展分区可以分成若干逻辑分区。所有的逻辑分区都是扩展分区的一部分</p>
+<p><strong>物理卷</strong> PV 这也是一个磁盘分区，它可以更灵活地被划分和组合。可以将多个物理卷组合成一个卷组，然后在卷组上创建一个或多个逻辑卷。逻辑卷的大小可以随时调整，而不受物理卷的位置或大小的限制</p>
+<p><strong>卷组</strong> vg是一个或多个物理卷的组合，相当于是一个存储资源池</p>
+<p><strong>逻辑卷</strong> Logical Volume 这是卷组中抽象出来的一个磁盘空间</p>
+<p><strong>格式化</strong> 将分区格式化成不同的文件系统，常用的有ext4, xfs</p>
+<p><strong>文件系统</strong> linux系统中”一切皆文件”，文件系统决定了如何在磁盘&#x2F;分区上对文件进行命名、存储、和检索</p>
+<p><strong>挂载</strong> 我们无法直接访问磁盘中的文件，必须指定一个本地的一个文件目录关联到目标磁盘上的文件系统，通过指定的本地的文件目录才能直接查看磁盘中的文件，这个文件目录成为挂载点，这个行为称为挂载</p>
+<p>这张图画的很清楚：</p>
+
+
+<h2 id="3-查看磁盘信息"><a href="#3-查看磁盘信息" class="headerlink" title="3 查看磁盘信息"></a>3 查看磁盘信息</h2><h3 id="df"><a href="#df" class="headerlink" title="df"></a>df</h3><p>disk filesystem 磁盘文件系统，用于显示文件系统的磁盘空间使用情况</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Filesystem Size Used Avail Use% Mounted on</span><br><span class="line">tmpfs 388M 2.0M 386M 1% /run</span><br><span class="line">/dev/mapper/ubuntu--vg-ubuntu--lv 18G 12G 5.0G 71% /</span><br><span class="line">tmpfs 1.9G 0 1.9G 0% /dev/shm</span><br><span class="line">tmpfs 5.0M 4.0K 5.0M 1% /run/lock</span><br><span class="line">/dev/sda2 1.8G 381M 1.3G 24% /boot</span><br><span class="line">tmpfs 388M 120K 388M 1% /run/user/1000</span><br><span class="line">/dev/sr0 2.0G 2.0G 0 100% /media/xhs/Ubuntu-Server 22.04.3 LTS amd64</span><br></pre></td></tr></table></figure>
+
+<p>&#x2F;run：这是一个tmpfs文件系统，tmpfs是基于内存的文件系统，可以使用内存或swap分区来存储文件，读写速度非常快。</p>
+<p>&#x2F;：这是主文件系统，它是一个逻辑卷（&#x2F;dev&#x2F;mapper&#x2F;ubuntu–vg-ubuntu–lv）</p>
+<p>&#x2F;dev&#x2F;shm：这是一个共享内存tmpfs，使用RAM作为存储介质，读写速度非常快</p>
+<p>&#x2F;run&#x2F;lock：这是一个tmpfs文件系统，用于存储锁文件</p>
+<p>&#x2F;boot：俗称启动盘（&#x2F;dev&#x2F;sda2），包含了启动linux系统所需的一些重要文件</p>
+<p>&#x2F;run&#x2F;user&#x2F;1000：这是一个tmpfs文件系统，用于存储用户级别的session数据</p>
+<p>&#x2F;media&#x2F;xhs&#x2F;Ubuntu-Server 22.04.3 LTS amd64：这是光盘驱动器（&#x2F;dev&#x2F;sr0），一个Ubuntu Server 22.04.3 LTS的安装光盘。</p>
+<blockquote>
+<p> 随机访问存储（Random Access Memory，简称RAM）是计算机中的一种主要存储设备。它可以快速读取和写入数据，并且能够随机访问任意位置的存储单元，因此被称为”随机访问存储”。RAM一般用于存储正在运行的程序、数据和操作系统等信息，RAM具有快速读取和写入数据的能力，可以使计算机更快地执行操作。RAM可以被认为是一种短期存储，因为当计算机关闭时，RAM中的所有数据都会被清除。</p>
+</blockquote>
+<h3 id="du"><a href="#du" class="headerlink" title="du"></a>du</h3><p>Disk Usage 磁盘使用情况，用于检查文件和目录的磁盘使用信息，显示的是文件和目录占用信息，而不是它们实际使用的空间，例如，如果文件系统的块大小是4KB，那么即使创建一个只有1字节的文件，文件系统也会为这个文件预留4KB的空间。du命令显示的文件大小可能会大于文件实际的大小。</p>
+<p>du 会显示出所有挂载的文件系统的空间使用情况</p>
+<p>-s 只显示总计，-h 以人类可读的格式显示</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">du -sh ./cloud-deploy</span><br><span class="line">300K cloud-deploy</span><br><span class="line"></span><br><span class="line">du -h ./cloud-deploy</span><br><span class="line">8.0K ./cloud-deploy/.git/info</span><br><span class="line">8.0K ./cloud-deploy/.git/refs/remotes/origin</span><br><span class="line">12K ./cloud-deploy/.git/refs/remotes</span><br><span class="line">4.0K ./cloud-deploy/.git/refs/tags</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="lsblk"><a href="#lsblk" class="headerlink" title="lsblk"></a>lsblk</h3><p>用于列出所有块设备信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">设备名称 主设备号:次设备号 可移动设备 只读 类型 挂载点</span><br><span class="line">NAME MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS</span><br><span class="line">loop0 7:0 0 4K 1 loop /snap/bare/5</span><br><span class="line">loop2 7:2 0 74.1M 1 loop /snap/core22/1033</span><br><span class="line">loop3 7:3 0 63.5M 1 loop /snap/core20/2015</span><br><span class="line">...</span><br><span class="line">loop10 7:10 0 40.4M 1 loop /snap/snapd/20671</span><br><span class="line">sda 8:0 0 20G 0 disk</span><br><span class="line">├─sda1 8:1 0 1M 0 part</span><br><span class="line">├─sda2 8:2 0 1.8G 0 part /boot</span><br><span class="line">└─sda3 8:3 0 18.2G 0 part</span><br><span class="line">└─ubuntu--vg-ubuntu--lv 253:0 0 18.2G 0 lvm /</span><br><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">sr0 11:0 1 2G 0 rom /media/xhs/Ubuntu-Server 22.04.3 LTS amd64</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>主设备号：主设备号用于标识设备的类型。例如，所有的SCSI硬盘设备都有相同的主设备号。<br>次设备号：次设备号用于标识同一类型的设备中的特定设备。例如，第一个SCSI硬盘的次设备号是0，第二个SCSI硬盘的次设备号是1，以此类推。</p>
+</blockquote>
+<h3 id="fdisk"><a href="#fdisk" class="headerlink" title="fdisk"></a>fdisk</h3><p>可以是Fixed Disk也可以是Format Disk，用来查看、创建、删除、检查磁盘分区</p>
+<p>-l 列出所有分区表</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">~# fdisk -l</span><br><span class="line">Disk /dev/sda: 20 GiB, 21474836480 bytes, 41943040 sectors</span><br><span class="line">Disk model: VMware Virtual S # 磁盘的型号。在这种情况下，它是一个VMware虚拟磁盘。</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes # 每个扇区是512字节</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes # 逻辑扇区和物理扇区的大小</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes # 最小和最优的I/O大小</span><br><span class="line">Disklabel type: gpt # 磁盘标签的类型。GPT（GUID Partition Table）。</span><br><span class="line">Disk identifier: D1840A28-5A7D-4F13-8495-D55FDDF187F7 # 磁盘的唯一标识符</span><br><span class="line"></span><br><span class="line">设备 开始扇区 结束扇区 扇区总数</span><br><span class="line">Device Start End Sectors Size Type</span><br><span class="line">/dev/sda1 2048 4095 2048 1M BIOS boot</span><br><span class="line">/dev/sda2 4096 3719167 3715072 1.8G Linux filesystem</span><br><span class="line">/dev/sda3 3719168 41940991 38221824 18.2G Linux filesystem</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="pvs"><a href="#pvs" class="headerlink" title="pvs"></a>pvs</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">PV VG Fmt Attr PSize PFree</span><br><span class="line">/dev/sda3 ubuntu-vg lvm2 a-- 18.22g 0</span><br><span class="line">/dev/sdb1 vg156 lvm2 a-- 1020.00m 0</span><br><span class="line">/dev/sdb3 vg0 lvm2 a-- &lt;3.00g &lt;2.00g</span><br><span class="line">/dev/sdb5 vg156 lvm2 a-- 1020.00m 1012.00m</span><br><span class="line">/dev/sdb6 vg156 lvm2 a-- &lt;2.00g 0</span><br></pre></td></tr></table></figure>
+
+<p>pvdisplay 查看更详细的信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> Physical volume </span><br><span class="line">PV Name /dev/sdb3</span><br><span class="line">VG Name vg0</span><br><span class="line">PV Size 3.00 GiB / not usable 4.00 MiB</span><br><span class="line">Allocatable yes</span><br><span class="line">PE Size 4.00 MiB</span><br><span class="line">Total PE 767</span><br><span class="line">Free PE 511</span><br><span class="line">Allocated PE 256</span><br><span class="line">PV UUID K9XGZP-Wj8m-okSb-Bd7l-aiRS-iOMr-Mswu56</span><br></pre></td></tr></table></figure>
+
+<h3 id="vgs"><a href="#vgs" class="headerlink" title="vgs"></a>vgs</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">VG #PV #LV #SN Attr VSize VFree</span><br><span class="line">ubuntu-vg 1 1 0 wz--n- 18.22g 0</span><br><span class="line">vg0 1 1 0 wz--n- &lt;3.00g &lt;2.00g</span><br><span class="line">vg156 3 1 0 wz--n- &lt;3.99g 1012.00m</span><br></pre></td></tr></table></figure>
+
+<p>PV 物理卷数量</p>
+<p>LV 逻辑卷数量</p>
+<p>SN 快照数量</p>
+<p>Attr 卷组属性，表示此卷组可读写（w），大小可调整（z），没有 RAID（-），没有部分模式（-），没有集群（n），没有内部策略（-）</p>
+<p>vgdisplay 查看更详细的信息</p>
+<h3 id="lvs"><a href="#lvs" class="headerlink" title="lvs"></a>lvs</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LV VG Attr LSize Pool Origin Data% Meta% Move Log Cpy%Sync Convert</span><br><span class="line">ubuntu-lv ubuntu-vg -wi-ao 18.22g</span><br><span class="line">lv0 vg0 -wi-a- 1.00g</span><br><span class="line">lv156 vg156 -wi-a- 3.00g</span><br></pre></td></tr></table></figure>
+
+<p>lvdisplay 查看更详细的信息</p>
+<h2 id="4-添加"><a href="#4-添加" class="headerlink" title="4 添加"></a>4 添加</h2><h3 id="添加partition"><a href="#添加partition" class="headerlink" title="添加partition"></a>添加partition</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">~# fdisk /dev/sdb</span><br><span class="line"></span><br><span class="line">Welcome to fdisk (util-linux 2.37.2).</span><br><span class="line">Changes will remain in memory only, until you decide to write them.</span><br><span class="line">Be careful before using the write command.</span><br><span class="line"></span><br><span class="line">Device does not contain a recognized partition table.</span><br><span class="line">Created a new DOS disklabel with disk identifier 0x868fc991.</span><br><span class="line"></span><br><span class="line">Command (m for help): m # 查看帮助</span><br><span class="line"></span><br><span class="line">Help:</span><br><span class="line"></span><br><span class="line">DOS (MBR)</span><br><span class="line">a toggle a bootable flag</span><br><span class="line">b edit nested BSD disklabel</span><br><span class="line">c toggle the dos compatibility flag</span><br><span class="line"></span><br><span class="line">Generic</span><br><span class="line">d delete a partition</span><br><span class="line">F list free unpartitioned space</span><br><span class="line">l list known partition types</span><br><span class="line">n add a new partition</span><br><span class="line">p print the partition table</span><br><span class="line">t change a partition type</span><br><span class="line">v verify the partition table</span><br><span class="line">i print information about a partition</span><br><span class="line"></span><br><span class="line">Misc</span><br><span class="line">m print this menu</span><br><span class="line">u change display/entry units</span><br><span class="line">x extra functionality (experts only)</span><br><span class="line"></span><br><span class="line">Script</span><br><span class="line">I load disk layout from sfdisk script file</span><br><span class="line">O dump disk layout to sfdisk script file</span><br><span class="line"></span><br><span class="line">Save &amp; Exit</span><br><span class="line">w write table to disk and exit</span><br><span class="line">q quit without saving changes</span><br><span class="line"></span><br><span class="line">Create a new label</span><br><span class="line">g create a new empty GPT partition table</span><br><span class="line">G create a new empty SGI (IRIX) partition table</span><br><span class="line">o create a new empty DOS partition table</span><br><span class="line">s create a new empty Sun partition table</span><br><span class="line"></span><br><span class="line">Command (m for help): n # 创建分区</span><br><span class="line">Partition type</span><br><span class="line">p primary (0 primary, 0 extended, 4 free)</span><br><span class="line">e extended (container for logical partitions)</span><br><span class="line">Select (default p): # 默认创建主分区</span><br><span class="line"></span><br><span class="line">Using default response p.</span><br><span class="line">Partition number (1-4, default 1): 默认分区号是1</span><br><span class="line">First sector (2048-41943039, default 2048): # 默认开始扇区是2048</span><br><span class="line">Last sector, +/-sectors or +/-size&#123;K,M,G,T,P&#125; (2048-41943039, default 41943039): +1G # 选择结束扇区，这里使用+1G表示创建1G空间，默认选项会将所有空间用于创建分区</span><br><span class="line"></span><br><span class="line">Created a new partition 1 of type &#x27;Linux&#x27; and of size 1 GiB.</span><br><span class="line"></span><br><span class="line">Command (m for help): p # 查看分区信息，</span><br><span class="line">Disk /dev/sdb: 20 GiB, 21474836480 bytes, 41943040 sectors</span><br><span class="line">Disk model: VMware Virtual S</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x868fc991</span><br><span class="line"></span><br><span class="line">Device Boot Start End Sectors Size Id Type</span><br><span class="line">/dev/sdb1 2048 2099199 2097152 1G 83 Linux</span><br><span class="line"></span><br><span class="line">Command (m for help): wq # w保存，q退出</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>再创建三个主分区，大小分别为2、3、4G</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/sdb: 20 GiB, 21474836480 bytes, 41943040 sectors</span><br><span class="line">Disk model: VMware Virtual S</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x868fc991</span><br><span class="line"></span><br><span class="line">Device Boot Start End Sectors Size Id Type</span><br><span class="line">/dev/sdb1 2048 2099199 2097152 1G 83 Linux</span><br><span class="line">/dev/sdb2 2099200 6293503 4194304 2G 83 Linux</span><br><span class="line">/dev/sdb3 6293504 12584959 6291456 3G 83 Linux</span><br><span class="line">/dev/sdb4 12584960 20973567 8388608 4G 83 Linux</span><br></pre></td></tr></table></figure>
+
+
+<p>此时再想创建，就会提示不能创建</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Command (m for help): n</span><br><span class="line">To create more partitions, first replace a primary with an extended partition.</span><br></pre></td></tr></table></figure>
+
+
+<p>必须将主分区替换为扩展分区，扩展分区可以包含多个逻辑分区，将刚刚创建的4号分区删除</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Command (m for help): d</span><br><span class="line">Partition number (1-4, default 4):</span><br><span class="line"></span><br><span class="line">Partition 4 has been deleted.</span><br><span class="line"></span><br><span class="line">Command (m for help): n</span><br><span class="line">Partition type</span><br><span class="line">p primary (0 primary, 0 extended, 4 free)</span><br><span class="line">e extended (container for logical partitions)</span><br><span class="line">Select (default p): e # 选择e即可，接下来流程都一样</span><br></pre></td></tr></table></figure>
+
+
+<p>之后创建的分区都称为逻辑分区</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Command (m for help): p</span><br><span class="line">Disk /dev/sdb: 20 GiB, 21474836480 bytes, 41943040 sectors</span><br><span class="line">Disk model: VMware Virtual S</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0x868fc991</span><br><span class="line"></span><br><span class="line">Device Boot Start End Sectors Size Id Type</span><br><span class="line">/dev/sdb1 2048 2099199 2097152 1G 83 Linux</span><br><span class="line">/dev/sdb2 2099200 6293503 4194304 2G 83 Linux</span><br><span class="line">/dev/sdb3 6293504 12584959 6291456 3G 83 Linux</span><br><span class="line">/dev/sdb4 12584960 20973567 8388608 4G 5 Extended</span><br><span class="line">/dev/sdb5 12587008 14684159 2097152 1G 83 Linux</span><br><span class="line">/dev/sdb6 14686208 18880511 4194304 2G 83 Linux</span><br></pre></td></tr></table></figure>
+
+
+<p>lsblk 发现sdb4只有1k</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part</span><br><span class="line">├─sdb2 8:18 0 2G 0 part</span><br><span class="line">├─sdb3 8:19 0 3G 0 part</span><br><span class="line">├─sdb4 8:20 0 1K 0 part</span><br><span class="line">├─sdb5 8:21 0 1G 0 part</span><br><span class="line">└─sdb6 8:22 0 2G 0 part</span><br></pre></td></tr></table></figure>
+
+
+<p>扩展分区本身并不包含任何数据，它只是一个容器，用于包含逻辑分区（如&#x2F;dev&#x2F;sdb5和&#x2F;dev&#x2F;sdb6）。因此，扩展分区的大小显示为1K，这只是一个占位符，表示这是一个扩展分区，而不是实际的数据分区。实际的数据存储在逻辑分区中，可以看到&#x2F;dev&#x2F;sdb5和&#x2F;dev&#x2F;sdb6各有1G和2G的存储空间。</p>
+<blockquote>
+<p> 只能拥有一个扩展分区，所有逻辑分区都被挂在扩展分区下面，逻辑分区的大小总和不能超过扩展分区(上文中是4G)</p>
+</blockquote>
+<h3 id="创建物理卷"><a href="#创建物理卷" class="headerlink" title="创建物理卷"></a>创建物理卷</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pvcreate /dev/sdb3</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="创建卷组"><a href="#创建卷组" class="headerlink" title="创建卷组"></a>创建卷组</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vgcreate vg0 /dev/sdb3</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="创建lvm"><a href="#创建lvm" class="headerlink" title="创建lvm"></a>创建lvm</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lvcreate -n lv0 -L 1G vg0</span><br><span class="line"># -n 指定名称 -L 指定大小</span><br></pre></td></tr></table></figure>
+
+
+<p>lsblk 查看</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part</span><br><span class="line">├─sdb2 8:18 0 2G 0 part</span><br><span class="line">├─sdb3 8:19 0 3G 0 part</span><br><span class="line">│ └─vg0-lv0 253:1 0 1G 0 lvm</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="挂载文件系统"><a href="#挂载文件系统" class="headerlink" title="挂载文件系统"></a>挂载文件系统</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 指定一个用于挂载的目录</span><br><span class="line">mkdir -p /mnt/lv0</span><br><span class="line"></span><br><span class="line"># 将逻辑卷初始化为ext4</span><br><span class="line">mkfs.ext4 /dev/vg0/lv0</span><br><span class="line"></span><br><span class="line"># 挂载</span><br><span class="line">mount /dev/vg0/lv0 /mnt/lv0/</span><br><span class="line"></span><br><span class="line"># part也能进行挂载，同样需要先初始化，然后挂载到一个目录即可</span><br><span class="line">mount /dev/sdb1 /mnt/lv1/</span><br></pre></td></tr></table></figure>
+
+
+<p>lsblk</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part /mnt/lv1</span><br><span class="line">├─sdb2 8:18 0 2G 0 part</span><br><span class="line">├─sdb3 8:19 0 3G 0 part</span><br><span class="line">│ └─vg0-lv0 253:1 0 1G 0 lvm /mnt/lv0</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<p>在&#x2F;mnt&#x2F;lv1和&#x2F;mnt&#x2F;lv0目录中写一些文件，使用df查看：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/dev/mapper/vg0-lv0 974M 257M 650M 29% /mnt/lv0</span><br><span class="line">/dev/sdb1 974M 514M 393M 57% /mnt/lv1</span><br></pre></td></tr></table></figure>
+
+<p>mount是临时挂载，实现永久挂载：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat &gt;&gt; /etc/fstab &lt;&lt; EOF</span><br><span class="line">/dev/vg0/lv0 /mnt/lv0/ ext4 defaults 0 0</span><br><span class="line">EOF</span><br><span class="line"># 参数解释，从左往右分别为：</span><br><span class="line"># 要挂载的设备 挂载点 文件系统类型 挂载选项(选默认选项)</span><br><span class="line"># 第一个0 是dump备份的参数。0表示不备份，1表示需要备份。</span><br><span class="line"># 第二个0 是文件系统检查的顺序。0表示不检查，1表示首先检查（通常用于根文件系统），2表示接下来检查（用于非根文件系统）默认设置为0就好了</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-删除"><a href="#5-删除" class="headerlink" title="5 删除"></a>5 删除</h2><p>必须按照和创建相反的顺序删除分区。直接使用fdisk删除sdb3会发生这种事情：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fdisk -l</span><br><span class="line">Device Boot Start End Sectors Size Id Type</span><br><span class="line">/dev/sdb1 2048 2099199 2097152 1G 83 Linux</span><br><span class="line">/dev/sdb2 2099200 6293503 4194304 2G 83 Linux</span><br><span class="line">/dev/sdb4 12584960 20973567 8388608 4G 5 Extended</span><br><span class="line">/dev/sdb5 12587008 14684159 2097152 1G 83 Linux</span><br><span class="line">/dev/sdb6 14686208 18880511 4194304 2G 83 Linux</span><br><span class="line"></span><br><span class="line">lsblk</span><br><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part /mnt/lv1</span><br><span class="line">├─sdb2 8:18 0 2G 0 part</span><br><span class="line">├─sdb3 8:19 0 3G 0 part</span><br><span class="line">│ └─vg0-lv0 253:1 0 1G 0 lvm /mnt/lv0</span><br><span class="line">├─sdb4 8:20 0 512B 0 part</span><br><span class="line">├─sdb5 8:21 0 1G 0 part</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<p>可以看到两个命令的结果不一致，事实上除了fdisk外，其它的命令都显示sdb3仍然还在，所以sdb3根本没有被删除，这种不一致不好好处理会产生更大的麻烦，最好按以下顺序删除：</p>
+<h3 id="卸载文件系统"><a href="#卸载文件系统" class="headerlink" title="卸载文件系统"></a>卸载文件系统</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># umount &lt;挂载点&gt;</span><br><span class="line">umount /mnt/lv0/</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果提示挂载点被占用，可以使用 lsof &#x2F;mnt&#x2F;lv0&#x2F; 查看有什么进程在使用，并可以选择kill它们<br>强制卸载命令：umount -l &#x2F;mnt&#x2F;lv0</p>
+</blockquote>
+<h3 id="删除逻辑卷"><a href="#删除逻辑卷" class="headerlink" title="删除逻辑卷"></a>删除逻辑卷</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lvremove /dev/vg0/lv0</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除卷组"><a href="#删除卷组" class="headerlink" title="删除卷组"></a>删除卷组</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vgremove /dev/vg0</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="删除物理卷"><a href="#删除物理卷" class="headerlink" title="删除物理卷"></a>删除物理卷</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pvremove /dev/sdb3</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="删除分区"><a href="#删除分区" class="headerlink" title="删除分区"></a>删除分区</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fdisk /dev/sdb</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  Command (m for help): d</span><br><span class="line">  Partition number (1-6, default 6): 3</span><br><span class="line">  </span><br><span class="line">  Partition 3 has been deleted.</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> 如果还是提示不能删除，那么使用 partprobe 更新分区表</p>
+</blockquote>
+<h2 id="6-扩容"><a href="#6-扩容" class="headerlink" title="6 扩容"></a>6 扩容</h2><p>fdisk扩容必须确保当前分区后面没有其它分区。</p>
+<p>先使用d删除分区，然后用n创建更大的分区，而且新分区的起始位置必须和原分区的起始位置相同，否则会丢失数据。这一步就不演示了。</p>
+<p>扩大分区后， 还需要扩大文件系统的空间</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fdisk /dev/sdb`</span><br><span class="line"># d 删除3, 4, 5 6号分区</span><br><span class="line"># n 创建更大的3号分区</span><br><span class="line"></span><br><span class="line"># 扩大文件系统的空间</span><br><span class="line">resize2fs /dev/sdb3</span><br></pre></td></tr></table></figure>
+
+
+<p>扩容不能跨区这点很麻烦，假如4，5，6号分区有数据不能删除，那3号分区就无法扩容，gparted可以调整其它分区的大小，但是gparted是图形化工具，使用的情况有限。</p>
+<p>卷组可以解决这个情况</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lsblk</span><br><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part</span><br><span class="line">...</span><br><span class="line">├─sdb5 8:21 0 1G 0 part</span><br><span class="line">└─sdb6 8:22 0 2G 0 part</span><br><span class="line"></span><br><span class="line"># 创建物理卷</span><br><span class="line">pvcreate /dev/sdb1</span><br><span class="line">pvcreate /dev/sdb5</span><br><span class="line">pvcreate /dev/sdb6</span><br><span class="line"></span><br><span class="line"># 创建卷组</span><br><span class="line">vgcreate vg156 /dev/sdb1 /dev/sdb5 /dev/sdb6</span><br><span class="line"># 已有的卷组可以添加物理卷</span><br><span class="line">vgextend vg156 /dev/sdb2</span><br><span class="line"></span><br><span class="line"># 创建lvm</span><br><span class="line">lvcreate -n lv156 -L 1G vg156</span><br><span class="line"></span><br><span class="line">lsblk</span><br><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part</span><br><span class="line">...</span><br><span class="line">├─sdb5 8:21 0 1G 0 part</span><br><span class="line">└─sdb6 8:22 0 2G 0 part</span><br><span class="line">└─vg156-lv156 253:2 0 1G 0 lvm</span><br><span class="line"></span><br><span class="line"># 可以随时给lvm扩容</span><br><span class="line">lvextend -L 3G /dev/vg156/lv156</span><br><span class="line"></span><br><span class="line">lsblk</span><br><span class="line">sdb 8:16 0 20G 0 disk</span><br><span class="line">├─sdb1 8:17 0 1G 0 part</span><br><span class="line">│ └─vg156-lv156 253:2 0 3G 0 lvm</span><br><span class="line">...</span><br><span class="line">├─sdb5 8:21 0 1G 0 part</span><br><span class="line">│ └─vg156-lv156 253:2 0 3G 0 lvm</span><br><span class="line">└─sdb6 8:22 0 2G 0 part</span><br><span class="line">└─vg156-lv156 253:2 0 3G 0 lvm</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>linux</category>
+        <category>存储</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>存储</tag>
+      </tags>
+  </entry>
+</search>
