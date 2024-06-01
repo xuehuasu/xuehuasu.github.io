@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/lingan.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/lingan.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/lingan.png">
+  <link rel="mask-icon" href="/images/lingan.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-flat-top.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xuehuasu.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="vim写bash脚本常用到的操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vim与bash常用命令">
+<meta property="og:url" content="http://xuehuasu.github.io/project/2024/05/31/vim%E4%B8%8Ebash%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="XueHuaSu&#39;s Blog">
+<meta property="og:description" content="vim写bash脚本常用到的操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-31T19:38:42.000Z">
+<meta property="article:modified_time" content="2024-06-01T03:42:55.503Z">
+<meta property="article:author" content="雪花酥">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xuehuasu.github.io/project/2024/05/31/vim%E4%B8%8Ebash%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xuehuasu.github.io/project/2024/05/31/vim%E4%B8%8Ebash%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/","path":"2024/05/31/vim与bash常用命令/","title":"vim与bash常用命令"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>vim与bash常用命令 | XueHuaSu's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">XueHuaSu's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学而时习之，乐乐乐乐乐</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section">首页</a></li><li class="menu-item menu-item-tags"><a href="/tags" rel="section">标签</a></li><li class="menu-item menu-item-categories"><a href="/categories" rel="section">分类</a></li><li class="menu-item menu-item-archives"><a href="/archives" rel="section">归档</a></li><li class="menu-item menu-item-about"><a href="/about" rel="section">关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vim%E4%B8%8Ebash%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">vim与bash常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#vim-%E9%83%A8%E5%88%86"><span class="nav-number">1.1.</span> <span class="nav-text">vim 部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tab%E8%AE%BE%E7%BD%AE%E4%B8%BA4%E7%A9%BA%E6%A0%BC"><span class="nav-number">1.1.1.</span> <span class="nav-text">tab设置为4空格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%A4%9A%E8%A1%8C"><span class="nav-number">1.1.2.</span> <span class="nav-text">插入多行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim%E5%A4%9A%E7%AA%97%E5%8F%A3"><span class="nav-number">1.1.3.</span> <span class="nav-text">vim多窗口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%88%A0%E9%99%A4"><span class="nav-number">1.1.4.</span> <span class="nav-text">快速删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%89%E6%A0%87%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.1.5.</span> <span class="nav-text">光标定位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell-%E9%83%A8%E5%88%86"><span class="nav-number">1.2.</span> <span class="nav-text">shell 部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BA%E6%A0%BC"><span class="nav-number">1.2.1.</span> <span class="nav-text">空格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.2.2.</span> <span class="nav-text">&amp;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E8%BE%93%E5%85%A5%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">1.2.3.</span> <span class="nav-text">文件输入重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#if-%E5%88%A4%E6%96%AD"><span class="nav-number">1.2.4.</span> <span class="nav-text">if 判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#-1"><span class="nav-number">1.2.5.</span> <span class="nav-text">$()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cut"><span class="nav-number">1.2.6.</span> <span class="nav-text">cut</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#-2"><span class="nav-number">1.2.7.</span> <span class="nav-text"># $ @</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#-3"><span class="nav-number">1.2.8.</span> <span class="nav-text">[] () [[]] (())</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xargs"><span class="nav-number">1.2.9.</span> <span class="nav-text">xargs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find"><span class="nav-number">1.2.10.</span> <span class="nav-text">find</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#a-b-c"><span class="nav-number">1.3.</span> <span class="nav-text">{a,b,c}</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="雪花酥"
+      src="/images/head.png">
+  <p class="site-author-name" itemprop="name">雪花酥</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xuehuasu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xuehuasu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xuehuasu.github.io/project/2024/05/31/vim%E4%B8%8Ebash%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.png">
+      <meta itemprop="name" content="雪花酥">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XueHuaSu's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="vim与bash常用命令 | XueHuaSu's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vim与bash常用命令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-06-01 03:38:42 / 修改时间：11:42:55" itemprop="dateCreated datePublished" datetime="2024-06-01T03:38:42+08:00">2024-06-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/linux%E6%93%8D%E4%BD%9C/" itemprop="url" rel="index"><span itemprop="name">linux操作</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="次数 far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>vim写bash脚本常用到的操作</p>
+<span id="more"></span>
+<h1 id="vim与bash常用命令"><a href="#vim与bash常用命令" class="headerlink" title="vim与bash常用命令"></a>vim与bash常用命令</h1><h2 id="vim-部分"><a href="#vim-部分" class="headerlink" title="vim 部分"></a>vim 部分</h2><h3 id="tab设置为4空格"><a href="#tab设置为4空格" class="headerlink" title="tab设置为4空格"></a>tab设置为4空格</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vim默认8个空格的距离，格式很难看</span></span><br><span class="line">vim ~/.vimrc</span><br><span class="line"></span><br><span class="line"><span class="built_in">set</span> autoindent</span><br><span class="line"><span class="built_in">set</span> tabstop=4</span><br><span class="line"><span class="built_in">set</span> expandtab</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="插入多行"><a href="#插入多行" class="headerlink" title="插入多行"></a>插入多行</h3><p>在 Vim 中，使用块选择模式（Visual Block Mode）来同时在多行中插入相同的内容。</p>
+<ol>
+<li>导航到你想要开始选择的行和列。</li>
+<li>按 <code>Ctrl + v</code> 进入块选择模式。</li>
+<li>使用方向键或者 <code>j</code> 和 <code>k</code> 来选择多行。</li>
+<li>按 <code>I</code>（大写的 i）进入插入模式。</li>
+<li>输入想要插入的内容。</li>
+<li>按 <code>Esc</code> 退出插入模式。刚才输入的内容会被插入到所有选中的行中。</li>
+</ol>
+<h3 id="vim多窗口"><a href="#vim多窗口" class="headerlink" title="vim多窗口"></a>vim多窗口</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">:sp <span class="comment"># 上下分割</span></span><br><span class="line">:vsp <span class="comment"># 左右分割</span></span><br></pre></td></tr></table></figure>
+
+<p>可以使用 <code>Ctrl + w</code> 然后按 <code>h</code>、<code>j</code>、<code>k</code> 或 <code>l</code> 来在不同的窗口之间切换。这些键对应于左、下、上和右方向。</p>
+<p>当然我们也可以用tmux或者不用vim(bushi</p>
+<h3 id="快速删除"><a href="#快速删除" class="headerlink" title="快速删除"></a>快速删除</h3><p>在 Vim 中，你可以使用 <code>4dd</code> 来删除当前行以及接下来的三行。这里的 <code>4</code> 表示四行，<code>dd</code> 是删除命令</p>
+<ul>
+<li><code>dd</code>：剪切当前行。</li>
+<li><code>D</code>：剪切从光标位置到行尾的内容。</li>
+<li><code>d$</code>：剪切从光标位置到行尾的内容（与<code>D</code>命令相同）。</li>
+<li><code>d0</code>：剪切从光标位置到行首的内容。</li>
+<li><code>dw</code>：剪切从光标位置到下一个单词开头的内容。</li>
+<li><code>d2w</code>：剪切从光标位置开始的两个单词（<code>2</code>可以替换为任何数字，表示剪切的单词数）。</li>
+<li><code>dG</code>：剪切从光标位置到文件末尾的所有行。</li>
+<li><code>d1G</code>：剪切从光标位置到文件开头的所有行。</li>
+</ul>
+<h3 id="光标定位"><a href="#光标定位" class="headerlink" title="光标定位"></a>光标定位</h3><p><code>0</code> 定位到行头</p>
+<p><code>$</code>定位到行尾</p>
+<p><code>A</code>定位到行末并进入insert模式</p>
+<p><code>O</code>插入上一行</p>
+<p><code>o</code> 插入下一行</p>
+<p><code>h</code> <code>j</code> <code>k</code> <code>l</code> 分别对应光标的左下上右移动，向下移动10行就是<code>10k</code> </p>
+<h2 id="shell-部分"><a href="#shell-部分" class="headerlink" title="shell 部分"></a>shell 部分</h2><h3 id="空格"><a href="#空格" class="headerlink" title="空格"></a>空格</h3><p>bash中有些地方必须使用空格，有些地方禁止使用空格</p>
+<ol>
+<li>赋值操作不能不使用空格，<code>var=value</code></li>
+<li>测试表达式[]和[[]]，表达式和括号之间必须有空格，<code>[ $var -ne 0 ]</code></li>
+<li>算数表达式()(())，不用在意空格有无</li>
+</ol>
+<h3 id=""><a href="#" class="headerlink" title="&amp;"></a>&amp;</h3><p>在两个命令之间使用 <code>&amp;</code> 时，第一个命令会立即开始执行，然后 shell 不会等待它完成就立即开始执行第二个命令。例如：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">command1 &amp; command2</span><br></pre></td></tr></table></figure>
+
+<p><code>command2</code>会立即执行，<code>command1</code>会被放在后台执行</p>
+<h3 id="文件输入重定向"><a href="#文件输入重定向" class="headerlink" title="文件输入重定向"></a>文件输入重定向</h3><p>单行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;hello&#x27;</span> &gt; filename</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$hello</span> | <span class="built_in">tee</span> filename <span class="comment"># 覆盖</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$hello</span> | <span class="built_in">tee</span> -a filename <span class="comment"># 追加</span></span><br></pre></td></tr></table></figure>
+
+<p>多行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 追加</span></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; filename &lt;&lt; <span class="string">EOF </span></span><br><span class="line"><span class="string"> Hello</span></span><br><span class="line"><span class="string"> i&#x27;m</span></span><br><span class="line"><span class="string">   lihua</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"><span class="comment"># 覆盖</span></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; filename &lt;&lt; <span class="string">EOF </span></span><br><span class="line"><span class="string">  Hello</span></span><br><span class="line"><span class="string"> i&#x27;m</span></span><br><span class="line"><span class="string">   lihua</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 也可以使用echo+\n</span></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;  Hello\n\</span></span><br><span class="line"><span class="string"> i&#x27;m\n\</span></span><br><span class="line"><span class="string">   lihua&quot;</span>\</span><br><span class="line">&gt; filename</span><br><span class="line"><span class="comment"># 写成一行</span></span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;  Hello\n i&#x27;m\n   lihua&quot;</span> &gt; filename</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="if-判断"><a href="#if-判断" class="headerlink" title="if 判断"></a>if 判断</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 判断文件是否存在</span></span><br><span class="line">file=<span class="string">&quot;/path/to/your/file&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ ! -f <span class="variable">$file</span> ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;File does not exist&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;File exists&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="-1"><a href="#-1" class="headerlink" title="$()"></a>$()</h3><p>()创建子shell,可以在内部执行shell，$返回结果，很有趣</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以轻易的将文件内容取出并赋值给变量</span></span><br><span class="line">content=$(<span class="built_in">cat</span> filename) </span><br><span class="line"><span class="comment"># 遍历ls的执行结果</span></span><br><span class="line"><span class="keyword">for</span> pool <span class="keyword">in</span> $(ceph osd pool <span class="built_in">ls</span>)</span><br><span class="line"><span class="comment"># 还可以嵌套执行，比如取出key:value</span></span><br><span class="line">value=$(<span class="built_in">echo</span> $(grep -w key filename) | <span class="built_in">cut</span> -d<span class="string">&#x27; &#x27;</span> -f2)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="cut"><a href="#cut" class="headerlink" title="cut"></a>cut</h3><p>一些基本的<code>cut</code>命令的使用方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -b --bytes</span></span><br><span class="line"><span class="comment"># 提取第五个字节</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;how-to geek&#x27;</span> | <span class="built_in">cut</span> -b 5</span><br><span class="line"><span class="comment"># 5</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 取从第5个字节到第11个字节</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;how-to geek&#x27;</span> | <span class="built_in">cut</span> -b 5-11</span><br><span class="line"><span class="comment"># to geek</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -f --fields</span></span><br><span class="line"><span class="comment"># 提取第二个字段，并用-d指定分隔符是&#x27; &#x27;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;this is a multi word string&quot;</span> | <span class="built_in">cut</span> -d <span class="string">&#x27; &#x27;</span> -f 2</span><br><span class="line"><span class="comment"># 也可指定其它分隔符&#x27;,&#x27;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;one,two,three&quot;</span> | <span class="built_in">cut</span> -d <span class="string">&#x27;,&#x27;</span> -f 2</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="-2"><a href="#-2" class="headerlink" title="# $ @"></a># $ @</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取数组的长度</span></span><br><span class="line">length=<span class="variable">$&#123;#array[@]&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>@ 表示所有参数</p>
+<p># 表示参数个数</p>
+<p>${}负责提取结果</p>
+<p>你一定还见过这些：</p>
+<ul>
+<li><code>$0</code> - 脚本名</li>
+<li><code>$1</code> 到 <code>$9</code> - 脚本的参数。 <code>$1</code> 是第一个参数，依此类推。</li>
+<li><code>$@</code> - 所有参数</li>
+<li><code>$#</code> - 参数个数</li>
+<li><code>$?</code> - 前一个命令的返回值</li>
+<li><code>$$</code> - 当前脚本的进程识别码</li>
+<li><code>!!</code> - 完整的上一条命令，包括参数。常见应用：当你因为权限不足执行命令失败时，可以使用 <code>sudo !!</code>再尝试一次。</li>
+<li><code>$_</code> - 上一条命令的最后一个参数。如果你正在使用的是交互式 shell，你可以通过按下 <code>Esc</code> 之后键入 . 来获取这个值。</li>
+</ul>
+<p>更完整的列表在<a target="_blank" rel="noopener" href="https://tldp.org/LDP/abs/html/special-chars.html">这里</a> </p>
+<h3 id="-3"><a href="#-3" class="headerlink" title="[] () [[]] (())"></a>[] () [[]] (())</h3><p>在 Bash 脚本中，<code>[]</code>、<code>[[]]</code>、<code>()</code> 和 <code>(())</code> 都是用于条件测试的，但它们之间有一些区别：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这是 POSIX shell 的条件表达式。它支持文件和字符串测试，但不支持正则表达式或算术运算。</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> = <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;a is equal to b&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这是 Bash 的条件表达式。它提供了更多的功能，包括字符串比较、模式匹配、正则表达式和算术运算。</span></span><br><span class="line"><span class="keyword">if</span> [[ <span class="string">&quot;<span class="variable">$a</span>&quot;</span> == <span class="string">&quot;<span class="variable">$b</span>&quot;</span> ]]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;a is equal to b&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这是用于创建子 shell 的。在这个子 shell 中，你可以运行命令，而不会影响当前 shell 的环境。</span></span><br><span class="line">(a=hello; <span class="built_in">echo</span> <span class="variable">$a</span>)  <span class="comment"># prints &quot;hello&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$a</span>  <span class="comment"># prints nothing because the variable a is not defined in this shell</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这是用于算术运算的。你可以在其中进行各种算术运算。</span></span><br><span class="line"><span class="keyword">if</span> ((a == b * <span class="number">2</span>))</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;a is equal to b&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="xargs"><a href="#xargs" class="headerlink" title="xargs"></a>xargs</h3><p>它可以将标准输入数据<strong>转换为命令行参数</strong>，或者从文件的输出中读取数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将多行文本转换为单行文本</span></span><br><span class="line"><span class="built_in">cat</span> multiline.txt | xargs</span><br><span class="line"><span class="built_in">ls</span> | xargs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取输入，并将输入作为参数传递给其他命令, 比如找到所有的.log文件并删除</span></span><br><span class="line">find /path/to/directory -<span class="built_in">type</span> f -name <span class="string">&quot;*.log&quot;</span> | xargs <span class="built_in">rm</span> -f</span><br><span class="line"></span><br><span class="line"><span class="comment"># 找到所有的`.jpg`文件，并且将它们压缩</span></span><br><span class="line">find . -<span class="built_in">type</span> f -name <span class="string">&quot;*.jpg&quot;</span> -<span class="built_in">print</span> | xargs tar -czvf images.tar.gz</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="find"><a href="#find" class="headerlink" title="find"></a>find</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 按名称</span></span><br><span class="line">find . -name filename</span><br><span class="line"><span class="comment"># 按类型 比如目录</span></span><br><span class="line">find . -<span class="built_in">type</span> d</span><br><span class="line"><span class="comment"># 按大小 比如大于1M的文件</span></span><br><span class="line">find . -<span class="built_in">type</span> f -size +1M</span><br><span class="line"><span class="comment"># 按权限</span></span><br><span class="line">find . -<span class="built_in">type</span> f -perm 777</span><br><span class="line"><span class="comment"># 按修改时间</span></span><br><span class="line">find . -<span class="built_in">type</span> f -mtime -7</span><br><span class="line"><span class="comment"># 对找到的文件执行操作，比如删除找到的文件</span></span><br><span class="line">find . -<span class="built_in">type</span> f -name <span class="string">&quot;*.tmp&quot;</span> -<span class="built_in">exec</span> <span class="built_in">rm</span> &#123;&#125; \;</span><br><span class="line"><span class="comment"># 更高级的操作 查看最近使用的文件</span></span><br><span class="line"><span class="comment"># 下方xargs使用了-0，表示将收到的参数用空字符隔开，而不是空格，用于区别包含空格的文件名</span></span><br><span class="line">find . -<span class="built_in">type</span> f -mmin -60 -print0 | xargs -0 <span class="built_in">ls</span> -lt | <span class="built_in">head</span> -10</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="a-b-c"><a href="#a-b-c" class="headerlink" title="{a,b,c}"></a>{a,b,c}</h2><p>{}会将这里面的内容展开，有以下的妙用</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这将创造三个txt</span></span><br><span class="line"><span class="built_in">touch</span> &#123;a,b,c&#125;.txt</span><br><span class="line"><span class="comment"># 你还可以这样做：</span></span><br><span class="line"><span class="built_in">touch</span> &#123;a,b,c&#125;_&#123;d,e&#125;.txt</span><br><span class="line"><span class="built_in">ls</span> </span><br><span class="line">a_d.txt  a_e.txt  b_d.txt  b_e.txt  c_d.txt  c_e.txt</span><br><span class="line"><span class="comment"># 还可以这样: </span></span><br><span class="line"><span class="built_in">touch</span> &#123;1..10&#125;.txt <span class="comment"># 展开[1,10]区间所有的整数，并创建对应名称的txt</span></span><br></pre></td></tr></table></figure>
+
+
+
+<div id="gitalk-container"></div>
+<script>
+const gitalk = new Gitalk({
+  clientID: 'Ov23ctteY5rA6HskBCFV',
+  clientSecret: '2b7f82ef23a3a69db4bf9f59d8ee02836ea2129f',
+  repo: 'xuehuasu.github.io',      // The repository of store comments,
+  owner: 'xuehuasu',
+  admin: ['xuehuasu'],
+  id: location.pathname,      // Ensure uniqueness and length less than 50
+  distractionFreeMode: false  // Facebook-like distraction free mode
+})
+
+<p>gitalk.render(‘gitalk-container’)<br></script></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"> # linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/" rel="prev" title="2-sat问题详解">
+                  <i class="fa fa-angle-left"></i> 2-sat问题详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">雪花酥</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">10k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">36 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="总次数 fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","cdn":"//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

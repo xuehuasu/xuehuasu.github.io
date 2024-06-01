@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/lingan.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/lingan.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/lingan.png">
+  <link rel="mask-icon" href="/images/lingan.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-flat-top.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xuehuasu.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="解决俩俩出现矛盾时的分组问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2-sat问题详解">
+<meta property="og:url" content="http://xuehuasu.github.io/project/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="XueHuaSu&#39;s Blog">
+<meta property="og:description" content="解决俩俩出现矛盾时的分组问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xuehuasu.github.io/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/image-20230405092428295.png">
+<meta property="og:image" content="http://xuehuasu.github.io/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/image-20230405092857122.png">
+<meta property="og:image" content="http://xuehuasu.github.io/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/image-20230405093822138.png">
+<meta property="og:image" content="http://xuehuasu.github.io/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/image-20230405093855294.png">
+<meta property="article:published_time" content="2024-05-31T18:49:47.000Z">
+<meta property="article:modified_time" content="2024-06-01T03:35:30.755Z">
+<meta property="article:author" content="雪花酥">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="图论">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xuehuasu.github.io/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/image-20230405092428295.png">
+
+
+<link rel="canonical" href="http://xuehuasu.github.io/project/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xuehuasu.github.io/project/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/","path":"2024/05/31/2-sat问题详解/","title":"2-sat问题详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2-sat问题详解 | XueHuaSu's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">XueHuaSu's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学而时习之，乐乐乐乐乐</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section">首页</a></li><li class="menu-item menu-item-tags"><a href="/tags" rel="section">标签</a></li><li class="menu-item menu-item-categories"><a href="/categories" rel="section">分类</a></li><li class="menu-item menu-item-archives"><a href="/archives" rel="section">归档</a></li><li class="menu-item menu-item-about"><a href="/about" rel="section">关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2-sat%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">2-sat基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-sat%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">2-sat简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">算法原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">1.3.</span> <span class="nav-text">通用解题思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E6%B7%B1%E7%90%86%E8%A7%A3"><span class="nav-number">1.4.</span> <span class="nav-text">加深理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%80%90%E6%A8%A1%E6%9D%BF%E3%80%912-SAT-%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.1.</span> <span class="nav-text">【模板】2-SAT 问题 </span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">输入格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">输出格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%8C%83%E5%9B%B4"><span class="nav-number">1.4.1.4.</span> <span class="nav-text">数据范围</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3%E6%80%9D%E8%B7%AF"><span class="nav-number">1.4.1.5.</span> <span class="nav-text">求解思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.4.1.6.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%A1%E5%9B%BE%E9%9A%BE%E9%A2%98"><span class="nav-number">1.4.2.</span> <span class="nav-text">卡图难题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%BC%E5%BC%8F-1"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">输入格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F-1"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">输出格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%8C%83%E5%9B%B4-1"><span class="nav-number">1.4.2.4.</span> <span class="nav-text">数据范围</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%B7%E4%BE%8B"><span class="nav-number">1.4.2.5.</span> <span class="nav-text">输入样例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%B7%E4%BE%8B"><span class="nav-number">1.4.2.6.</span> <span class="nav-text">输出样例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3%E6%80%9D%E8%B7%AF-1"><span class="nav-number">1.4.2.7.</span> <span class="nav-text">求解思路</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Wedding"><span class="nav-number">1.4.3.</span> <span class="nav-text">Wedding</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-2"><span class="nav-number">1.4.3.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%BC%E5%BC%8F-2"><span class="nav-number">1.4.3.2.</span> <span class="nav-text">输入格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F-2"><span class="nav-number">1.4.3.3.</span> <span class="nav-text">输出格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%B7%E4%BE%8B-1"><span class="nav-number">1.4.3.4.</span> <span class="nav-text">输入样例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%B7%E4%BE%8B-1"><span class="nav-number">1.4.3.5.</span> <span class="nav-text">输出样例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3%E6%80%9D%E8%B7%AF-2"><span class="nav-number">1.4.3.6.</span> <span class="nav-text">求解思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="nav-number">1.4.3.7.</span> <span class="nav-text">代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B3%E9%9D%A2%E5%9B%BE%E5%88%A4%E5%AE%9A"><span class="nav-number">1.4.4.</span> <span class="nav-text">平面图判定</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-3"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%BC%E5%BC%8F-3"><span class="nav-number">1.4.4.2.</span> <span class="nav-text">输入格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F-3"><span class="nav-number">1.4.4.3.</span> <span class="nav-text">输出格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%A0%B7%E4%BE%8B-2"><span class="nav-number">1.4.4.4.</span> <span class="nav-text">输入样例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A0%B7%E4%BE%8B-2"><span class="nav-number">1.4.4.5.</span> <span class="nav-text">输出样例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-number">1.4.4.6.</span> <span class="nav-text">解题思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="nav-number">1.4.4.7.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="雪花酥"
+      src="/images/head.png">
+  <p class="site-author-name" itemprop="name">雪花酥</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xuehuasu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xuehuasu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xuehuasu.github.io/project/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.png">
+      <meta itemprop="name" content="雪花酥">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XueHuaSu's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="2-sat问题详解 | XueHuaSu's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2-sat问题详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-06-01 02:49:47 / 修改时间：11:35:30" itemprop="dateCreated datePublished" datetime="2024-06-01T02:49:47+08:00">2024-06-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95/%E5%9B%BE%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">图论</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="次数 far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>14 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>解决俩俩出现矛盾时的分组问题</p>
+<span id="more"></span>
+<h1 id="2-sat基础"><a href="#2-sat基础" class="headerlink" title="2-sat基础"></a>2-sat基础</h1><h2 id="2-sat简介"><a href="#2-sat简介" class="headerlink" title="2-sat简介"></a>2-sat简介</h2><p>2-SAT，简单的说就是给出 $n$ 个集合，每个集合有两个元素，已知若干个 $&lt;a,b&gt;$，表示 $a$ 与 $b$ 矛盾（其中 $a$ 与 $b$ 属于不同的集合）。然后从每个集合选择一个元素，判断能否一共选 $n$ 个两两不矛盾的元素。显然可能有多种选择方案，一般题中只需要求出一种即可。</p>
+<p>比如邀请人来吃喜酒，夫妻二人必须去一个，然而某些夫妻之间有矛盾，那么我们要确定能否避免来人之间有矛盾，有时需要方案。这是一类生活中常见的问题。</p>
+<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>参考网上公认的大牛的文章，提供两种不同的思考方向</p>
+<ol>
+<li><p><a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/afd6c436a32d7375a41780f2.html?_wkts_=1680438067572">由对称性解2-SAT问题 </a>  </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/0f96c3daa58da0116c1749bc.html?_wkts_=1680438097877">2-SAT 解法浅析</a></p>
+</li>
+</ol>
+<h2 id="通用解题思路"><a href="#通用解题思路" class="headerlink" title="通用解题思路"></a>通用解题思路</h2><p>假设有 $a1,a2$ ,和 $b1,b2$ 两对元素,  $&lt;a1,b1&gt;$ 表示 $a1,b1$ 之间有矛盾，由于$a$ 和 $b$ 必须选出一个，我们用两条有向边 $(a1,b2)$  $(b1,a2)$ 表示下面两个方案</p>
+<ol>
+<li>选择 $a1$ ,由于 $&lt;a1,b1&gt;$ ，那么必须选择 $b2$ </li>
+<li>选择 $b1$ ,由于 $&lt;a1,b1&gt;$ ，必须选择 $a2$</li>
+</ol>
+<p>类似的构造完所有边之后，我们跑一遍  $Tarjan$  判断是否有一个集合中的两个元素在同一个 $SCC$ 中，若有则输出不可能，否则输出方案。构造方案只需要把几个不矛盾的 $SCC$ 拼起来就好了。</p>
+<p>输出方案时可以通过变量在图中的拓扑序确定该变量的取值。如果变量 $x$ 的拓扑序在 $\neg x$ 之后，那么取 $x$ 值为真。应用到 $Tarjan$ 算法的缩点，即 $x$ 所在 $SCC$ 编号在 $\neg x$ 之前时，取 $x$ 为真，否则取 $x$ 为假。因为 $Tarjan$ 算法求强连通分量时使用了栈，所以 $Tarjan$ 求得的 $SCC$ 编号相当于反拓扑序。</p>
+<p>时间复杂度为 $O(n+m)$ </p>
+<h2 id="加深理解"><a href="#加深理解" class="headerlink" title="加深理解"></a>加深理解</h2><h3 id="【模板】2-SAT-问题"><a href="#【模板】2-SAT-问题" class="headerlink" title="【模板】2-SAT 问题 "></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P4782">【模板】2-SAT 问题 </a></h3><h4 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h4><p>有 $n$ 个布尔变量 $x_{^1} \sim x_{^n}$，另有 $m$ 个需要满足的条件，每个条件的形式都是 「$x_i$ 为 <code>true</code> &#x2F; <code>false</code> 或 $x_j$ 为 <code>true</code> &#x2F; <code>false</code>」。比如 「$x_1$ 为真或 $x_3$ 为假」、「$x_7$ 为假或 $x_2$ 为假」。</p>
+<p>2-SAT 问题的目标是给每个变量赋值使得所有条件得到满足。</p>
+<h4 id="输入格式"><a href="#输入格式" class="headerlink" title="输入格式"></a>输入格式</h4><p>第一行两个整数 $n$ 和 $m$，意义如题面所述。</p>
+<p>接下来 $m$ 行每行 $4$ 个整数 $i$, $a$, $j$, $b$，表示 「$x_i$ 为 $a$ 或 $x_j$ 为 $b$」($a, b\in {0,1}$)</p>
+<h4 id="输出格式"><a href="#输出格式" class="headerlink" title="输出格式"></a>输出格式</h4><p>如无解，输出 <code>IMPOSSIBLE</code>；否则输出 <code>POSSIBLE</code>。</p>
+<p>下一行 $n$ 个整数 $x_1\sim x_n$（$x_i\in{0,1}$），表示构造出的解。</p>
+<h4 id="数据范围"><a href="#数据范围" class="headerlink" title="数据范围"></a>数据范围</h4><p>$1≤n,m≤10^6$  </p>
+<h4 id="求解思路"><a href="#求解思路" class="headerlink" title="求解思路"></a>求解思路</h4><p>每一个条件都是形如  $a\lor b $ 的约束，各种约束条件对应的逻辑命题如下：</p>
+<table>
+<thead>
+<tr>
+<th>$a \lor b$</th>
+<th>$\neg a \to b$            $ \neg b \to a$</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$\neg a \lor b$</td>
+<td>$a \to b$             $\neg b \to \neg a$</td>
+</tr>
+<tr>
+<td>$a\lor b$</td>
+<td>$\neg a \to \neg b$        $ b \to a$</td>
+</tr>
+<tr>
+<td>$\neg a\lor \neg b$</td>
+<td>$a \to \neg b$           $b \to \neg a$</td>
+</tr>
+</tbody></table>
+<p>建图之后判断是否存在$x$和$\neg x$在同一强连通分量，若不存在则有解，否则无解。</p>
+<p>如果 $x$的拓扑序 在$\neg x$ 之后，选择 $x$ ，否则选择$\neg x$ ，实际处理的时候，$tarjan$ 求得的是反拓扑序，即 $x$ 和$\neg x$ 谁序号越小选谁。</p>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">4e6</span> + <span class="number">7</span>, M = <span class="number">2</span> * N;</span><br><span class="line"><span class="type">int</span> a[N];</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> h[N], e[M], ne[M], idx = <span class="number">1</span>;</span><br><span class="line"><span class="type">bool</span> st[N];</span><br><span class="line"><span class="type">int</span> d[N], pre[N];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  e[idx] = b;</span><br><span class="line">  ne[idx] = h[a];</span><br><span class="line">  h[a] = idx++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> dfn[N], low[N], times = <span class="number">0</span>;</span><br><span class="line">stack&lt;<span class="type">int</span>&gt;stk;</span><br><span class="line"><span class="type">bool</span> in_stk[N];</span><br><span class="line"><span class="type">int</span> scc[N], sid = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tarjan</span><span class="params">(<span class="type">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  low[u] = dfn[u] = ++times;</span><br><span class="line">  stk.<span class="built_in">push</span>(u);</span><br><span class="line">  in_stk[u] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = h[u]; i; i = ne[i]) &#123;</span><br><span class="line">    <span class="type">int</span> j = e[i];</span><br><span class="line">    <span class="keyword">if</span> (!dfn[j]) &#123;</span><br><span class="line">      <span class="built_in">tarjan</span>(j);</span><br><span class="line">      low[u] = <span class="built_in">min</span>(low[j], low[u]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (in_stk[j]) &#123;</span><br><span class="line">      low[u] = <span class="built_in">min</span>(low[j], low[u]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (low[u] == dfn[u]) &#123;</span><br><span class="line">    <span class="type">int</span> p;</span><br><span class="line">    ++sid;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">      p = stk.<span class="built_in">top</span>();</span><br><span class="line">      stk.<span class="built_in">pop</span>();</span><br><span class="line">      in_stk[p] = <span class="literal">false</span>;</span><br><span class="line">      scc[p] = sid;</span><br><span class="line">    &#125; <span class="keyword">while</span> (p != u);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">solve</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">2</span> * n; i++)</span><br><span class="line">    <span class="keyword">if</span> (!dfn[i]) <span class="built_in">tarjan</span>(i);</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (scc[i] == scc[i + n]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">  <span class="type">int</span> x, a, y, b;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (m--) &#123;</span><br><span class="line">    cin &gt;&gt; x &gt;&gt; a &gt;&gt; y &gt;&gt; b;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (a == <span class="number">1</span> &amp;&amp; b == <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="built_in">add</span>(x + n, y);</span><br><span class="line">      <span class="built_in">add</span>(y + n, x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">1</span> &amp;&amp; b == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="built_in">add</span>(x + n, y + n);</span><br><span class="line">      <span class="built_in">add</span>(y, x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">0</span> &amp;&amp; b == <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="built_in">add</span>(x, y);</span><br><span class="line">      <span class="built_in">add</span>(y + n, x + n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (a == <span class="number">0</span> &amp;&amp; b == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="built_in">add</span>(x, y + n);</span><br><span class="line">      <span class="built_in">add</span>(y, x + n);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">solve</span>()) &#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;POSSIBLE&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">      cout &lt;&lt; (scc[i] &lt; scc[i + n]) &lt;&lt; <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> cout &lt;&lt; <span class="string">&quot;IMPOSSIBLE&quot;</span> &lt;&lt; endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="卡图难题"><a href="#卡图难题" class="headerlink" title="卡图难题"></a><a target="_blank" rel="noopener" href="https://www.acwing.com/problem/content/372/">卡图难题</a></h3><h4 id="题目描述-1"><a href="#题目描述-1" class="headerlink" title="题目描述"></a>题目描述</h4><p>有 $n$ 个布尔变量 $X_0\sim X_{n-1}$，每个变量的可能取值为$0$或$1$。</p>
+<p>给定M个算式，每个算是形如$X_a$ $op$ $X_b &#x3D; c$ ，其中$a$ ,$b$ 是变量编号，$c$ 是数字$0$或 $1$，$op$ 是 $AND$ $OR$ $XOR$三个位运算之一。</p>
+<p>求是否存在对每个变量的合法赋值，使所有算式都成立。</p>
+<h4 id="输入格式-1"><a href="#输入格式-1" class="headerlink" title="输入格式"></a>输入格式</h4><p>第一行两个整数 $n$ 和 $m$。</p>
+<p>接下来$M$行，每行包含三个整数 $a,b,c$，以及一个位运算（$AND$,$OR$,$XOR$ 中的一个）。</p>
+<h4 id="输出格式-1"><a href="#输出格式-1" class="headerlink" title="输出格式"></a>输出格式</h4><p>输出结果，如果存在，输出 <code>YES</code>，否则输出 <code>NO</code>。</p>
+<h4 id="数据范围-1"><a href="#数据范围-1" class="headerlink" title="数据范围"></a>数据范围</h4><p>$1&lt;&#x3D;N&lt;&#x3D;1000$</p>
+<p>$1&lt;&#x3D;M&lt;&#x3D;10^6$ </p>
+<h4 id="输入样例"><a href="#输入样例" class="headerlink" title="输入样例"></a>输入样例</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">4 4</span><br><span class="line">0 1 1 AND</span><br><span class="line">1 2 1 OR</span><br><span class="line">3 2 0 AND</span><br><span class="line">3 0 0 XOR</span><br></pre></td></tr></table></figure>
+
+<h4 id="输出样例"><a href="#输出样例" class="headerlink" title="输出样例"></a>输出样例</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">YES</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="求解思路-1"><a href="#求解思路-1" class="headerlink" title="求解思路"></a>求解思路</h4><p>每个元素都只有两种取值方案，这仍然是一道2-sat</p>
+<p>同样按题目要求得出对应的逻辑，按照一下逻辑构图，</p>
+<table>
+<thead>
+<tr>
+<th>运算规则</th>
+<th>转换逻辑</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$a$ &amp; $b &#x3D;1$</td>
+<td>$\neg a \to a$  &nbsp;&nbsp;&nbsp;&nbsp; $\neg b \to b$</td>
+</tr>
+<tr>
+<td>$a$ &amp; $b &#x3D;0$</td>
+<td>$a \to \neg b$ &nbsp;&nbsp;&nbsp;&nbsp; $b \to \neg a$</td>
+</tr>
+<tr>
+<td>$a|b&#x3D;1$</td>
+<td>$\neg a \to  b$ &nbsp;&nbsp;&nbsp;&nbsp;  $\neg b \to a$</td>
+</tr>
+<tr>
+<td>$a|b&#x3D;0$</td>
+<td>$a \to \neg a$  &nbsp;&nbsp;&nbsp;&nbsp;  $b \to \neg b$</td>
+</tr>
+<tr>
+<td>$a \land b&#x3D;1$</td>
+<td>$a \to  b$   $b \to a$  &nbsp;&nbsp;&nbsp;&nbsp;  $\neg a \to \neg b$  &nbsp;&nbsp;&nbsp;&nbsp; $\neg b \to \neg a$</td>
+</tr>
+<tr>
+<td>$a \land b&#x3D;0$</td>
+<td>$a \to \neg b$ &nbsp;&nbsp;&nbsp;&nbsp;   $b \to \neg a$ &nbsp;&nbsp;&nbsp;&nbsp;    $\neg a \to b$  &nbsp;&nbsp;&nbsp;&nbsp;   $\neg b \to a$</td>
+</tr>
+</tbody></table>
+<p>我们用$x$表示$1$, $x+n$ 表示0 也就是$\neg x$ </p>
+<p>建图之后判断是否存在$x$和$\neg x$在同一强连通分量，若不存在则有解，否则无解。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//tarjan直接套用即可</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">solve</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span> * n; i++)</span><br><span class="line">    <span class="keyword">if</span> (!dfn[i]) <span class="built_in">tarjan</span>(i);</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (low[i] == low[i + n]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">  <span class="type">int</span> a, b, c;</span><br><span class="line">  string ch;</span><br><span class="line">  <span class="keyword">while</span> (m--) &#123;</span><br><span class="line">    cin &gt;&gt; a &gt;&gt; b &gt;&gt; c &gt;&gt; ch;</span><br><span class="line">    <span class="keyword">if</span> (ch[<span class="number">0</span>] == <span class="string">&#x27;A&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (c == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="built_in">add</span>(a + n, a); <span class="built_in">add</span>(b + n, b);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">add</span>(a, b + n); <span class="built_in">add</span>(b, a + n);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ch[<span class="number">0</span>] == <span class="string">&#x27;O&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (c == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="built_in">add</span>(a + n, b); <span class="built_in">add</span>(b + n, a);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">add</span>(a, a + n); <span class="built_in">add</span>(b, b + n);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (c == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="built_in">add</span>(a, b); <span class="built_in">add</span>(b, a);</span><br><span class="line">        <span class="built_in">add</span>(a + n, b + n); <span class="built_in">add</span>(b + n, a + n);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">add</span>(a, b + n); <span class="built_in">add</span>(a + n, b);</span><br><span class="line">        <span class="built_in">add</span>(b, a + n); <span class="built_in">add</span>(b + n, a);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">solve</span>()) cout &lt;&lt; <span class="string">&quot;YES&quot;</span> &lt;&lt; endl;</span><br><span class="line">  <span class="keyword">else</span> cout &lt;&lt; <span class="string">&quot;NO&quot;</span> &lt;&lt; endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Wedding"><a href="#Wedding" class="headerlink" title="Wedding"></a><a target="_blank" rel="noopener" href="https://vjudge.net/problem/Kattis-wedding">Wedding</a></h3><h4 id="题目描述-2"><a href="#题目描述-2" class="headerlink" title="题目描述"></a>题目描述</h4><p>最多30对新人将参加婚宴，他们将坐在长桌的两边。新娘和新郎坐在一端，彼此相对，新娘戴着一个精心制作的头饰，她不会看到和她坐在同一边的人。丈夫和妻子坐在桌子的同一侧被认为是不吉利。此外，还有几对人存在矛盾，有矛盾的人坐在同一侧也被认为是不吉利的。你的工作是安排餐桌上的人，以避免任何不吉利</p>
+<h4 id="输入格式-2"><a href="#输入格式-2" class="headerlink" title="输入格式"></a>输入格式</h4><p>输入包含多组测试用例。</p>
+<p>第一行两个整数 $n$ 和 $m$。表示共有 $n$ 对夫妇，$m$ 对矛盾关系。接下来 $m$ 行，每行揭露一个矛盾关系。</p>
+<p>如 <code>7h 3w</code> 表示第 7 对夫妇中的丈夫和第 3 对夫妇中的妻子有矛盾。</p>
+<p>每对夫妇被编号为 <code>0,1,...,n-1</code>，其中新郎新娘的编号为 0。</p>
+<p>当输入一行为 <code>0 0</code> 时，表示输入终止。</p>
+<h4 id="输出格式-2"><a href="#输出格式-2" class="headerlink" title="输出格式"></a>输出格式</h4><p>每组测试用例输出一个结果，每个结果占一行。结果包含同新娘坐在一侧的人员列表。如果有多种方案，随便输出一种即可。</p>
+<p>输出结果时，请按照编号从小到大的顺序，输出人员。如果没有方案，则输出 <code>bad luck</code>。</p>
+<h4 id="输入样例-1"><a href="#输入样例-1" class="headerlink" title="输入样例"></a>输入样例</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">10 6</span><br><span class="line">3h 7h</span><br><span class="line">5w 3w</span><br><span class="line">7h 6w</span><br><span class="line">8w 3w</span><br><span class="line">7h 3w</span><br><span class="line">2w 5h</span><br><span class="line">0 0</span><br></pre></td></tr></table></figure>
+
+<h4 id="输出样例-1"><a href="#输出样例-1" class="headerlink" title="输出样例"></a>输出样例</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1h 2h 3w 4h 5h 6h 7h 8h 9h</span><br></pre></td></tr></table></figure>
+
+<h4 id="求解思路-2"><a href="#求解思路-2" class="headerlink" title="求解思路"></a>求解思路</h4><p>1.首先定义i为妻子，i+n为丈夫，夫妻之中妻子的真值为true，丈夫的真值为false（可以尝试换一种定义方式，然后修改代码，检验自己是否完全理解$2-sat$） </p>
+<p>2.题目要求输出和新娘在同一侧的人员名单，而新娘的编号是0，也就是说在有解的情况下，0是必选的，0与n是夫妻关系，n必不选，为了必选0，需要加一条由丈夫指向妻子的边，即add(n,0)</p>
+<p>3.如果有解，那么选择夫妻之间拓扑序小的坐新娘这侧。</p>
+<h4 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//tarjan模板略</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">memset</span>(h, <span class="number">0</span>, <span class="keyword">sizeof</span> h);</span><br><span class="line">  <span class="built_in">memset</span>(dfn, <span class="number">0</span>, <span class="keyword">sizeof</span> dfn);</span><br><span class="line">  <span class="built_in">memset</span>(low, <span class="number">0</span>, <span class="keyword">sizeof</span> low);</span><br><span class="line">  <span class="built_in">memset</span>(in_stk, <span class="number">0</span>, <span class="keyword">sizeof</span> in_stk);</span><br><span class="line">  <span class="built_in">memset</span>(scc, <span class="number">0</span>, <span class="keyword">sizeof</span> scc);</span><br><span class="line">  <span class="keyword">while</span> (!stk.<span class="built_in">empty</span>()) stk.<span class="built_in">pop</span>();</span><br><span class="line">  idx = <span class="number">1</span>;</span><br><span class="line">  sid = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (cin &gt;&gt; n &gt;&gt; m) &#123;</span><br><span class="line">    <span class="keyword">if</span> (n + m == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">    <span class="built_in">init</span>();</span><br><span class="line">    <span class="type">int</span> a, c, pa, pc;</span><br><span class="line">    <span class="type">char</span> b, d;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (m--) &#123;</span><br><span class="line">      cin &gt;&gt; a &gt;&gt; b &gt;&gt; c &gt;&gt; d;</span><br><span class="line">      <span class="keyword">if</span> (b == <span class="string">&#x27;h&#x27;</span>) pa = a, a = a + n;</span><br><span class="line">      <span class="keyword">else</span> pa = a + n;</span><br><span class="line">      <span class="keyword">if</span> (d == <span class="string">&#x27;h&#x27;</span>) pc = c, c = c + n;</span><br><span class="line">      <span class="keyword">else</span> pc = c + n;</span><br><span class="line">      <span class="built_in">add</span>(pa, c);</span><br><span class="line">      <span class="built_in">add</span>(pc, a);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">add</span>(n, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">solve</span>()) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (scc[i] &lt; scc[i + n]) cout &lt;&lt; i &lt;&lt; <span class="string">&#x27;w&#x27;</span> &lt;&lt; <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">        <span class="keyword">else</span> cout &lt;&lt; i &lt;&lt; <span class="string">&#x27;h&#x27;</span> &lt;&lt; <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      cout &lt;&lt; <span class="string">&quot;bad luck&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="平面图判定"><a href="#平面图判定" class="headerlink" title="平面图判定"></a><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3209">平面图判定</a></h3><h4 id="题目描述-3"><a href="#题目描述-3" class="headerlink" title="题目描述"></a>题目描述</h4><p>若能将无向图 $G&#x3D;(V, E)$ 画在平面上使得任意两条无重合顶点的边不相交，则称 $G$ 是平面图。判定一个图是否为平面图的问题是图论中的一个重要问题。现在假设你要判定的是一类特殊的图，图中存在一个包含所有顶点的环，即存在哈密顿回路。</p>
+<h4 id="输入格式-3"><a href="#输入格式-3" class="headerlink" title="输入格式"></a>输入格式</h4><p>输入文件的第一行是一个正整数 $T$，表示数据组数 (每组数据描述一个需要判定的图)。</p>
+<p>每组数据的第一行是用空格隔开的两个正整数 $N$ 和 $M$，分别表示对应图的顶点数和边数。</p>
+<p>紧接着 $M$ 行，每行两个正整数 $u$ 和 $v$ $\left(1\leq u,v\leq N\right)$，表示对应图的一条边 $\left(u,v\right)$, 输入的数据保证所有边仅出现一次。</p>
+<p>每组数据的最后一行是用空格隔开的 $N$ 个正整数，从左到右表示对应图中的一个哈密顿回路：$V_1,V_2,…,V_N$，即对任意 $i\not&#x3D;j$ 有 $V_i\not&#x3D;V_j$ 且对任意 $1\leq i\leq N-1$ 有 $\left(V_i,V_i-1\right)\in E$ 及 $\left(V_1,V_N\right)\in E$。输入的数据保证 $100%$ 的数据满足 $T\leq100,3\leq N\leq200,M\leq10000$。</p>
+<h4 id="输出格式-3"><a href="#输出格式-3" class="headerlink" title="输出格式"></a>输出格式</h4><p>包含 $T$ 行，若输入文件的第 $i$ 组数据所对应图是平面图，则在第 $i$ 行输出 $\text{YES}$，否则在第 $i$ 行输出 $\text{NO}$，注意均为大写字母</p>
+<h4 id="输入样例-2"><a href="#输入样例-2" class="headerlink" title="输入样例"></a>输入样例</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">2</span><br><span class="line">6 9</span><br><span class="line">1 4</span><br><span class="line">1 5</span><br><span class="line">1 6</span><br><span class="line">2 4</span><br><span class="line">2 5</span><br><span class="line">2 6</span><br><span class="line">3 4</span><br><span class="line">3 5</span><br><span class="line">3 6</span><br><span class="line">1 4 2 5 3 6</span><br><span class="line">5 5</span><br><span class="line">1 2</span><br><span class="line">2 3</span><br><span class="line">3 4</span><br><span class="line">4 5</span><br><span class="line">5 1</span><br><span class="line">1 2 3 4 5</span><br></pre></td></tr></table></figure>
+
+<h4 id="输出样例-2"><a href="#输出样例-2" class="headerlink" title="输出样例"></a>输出样例</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NO</span><br><span class="line">YES</span><br></pre></td></tr></table></figure>
+
+<h4 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h4><img src="/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/image-20230405092428295.png" class="" title="图1">
+
+<p>假设黑线是哈密顿环的一部分，红线是除了环之外的其他边，假设所有的边都在环的内部（上图），如果发现两条边相交，我们一定可以把其中一条边画在环的外部从而避免相交（下图），于是我们的$2-sat$模型就是所有两两相交的边，不能同时出现在内部或者外部（如果在内部相交，那么在外部也一定会相交）。</p>
+<img src="/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/image-20230405092857122.png" class="" title="图2">
+
+<p>接下来要思考的是如何判断两条边必相交，其实只要按照哈密顿环上点的顺序给$V$ 编号，然后判断两条边是否有交叉区域即可。</p>
+<img src="/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/image-20230405093822138.png" class="" title="图3">
+
+<img src="/2024/05/31/2-sat%E9%97%AE%E9%A2%98%E8%AF%A6%E8%A7%A3/image-20230405093855294.png" class="" title="图4">
+
+<p>如上图，相交一共两种情况，注意构成哈密顿环的边是不参与比较的。</p>
+<p>现在给出此题的 $2-sat$ 模型，定义：$x$ 为在环内的边，$\neg x$ 在环外的边，对于不属于哈密顿环的不同的两条边$a,b$，如果相交，则有如下关系：<br>$$<br>a \to \neg b，\neg a \to b， b \to \neg a ，\neg b \to a<br>$$<br>还有一个平面图的性质: $m&lt;&#x3D;3n-6$  </p>
+<h4 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ll long long</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1e4</span> + <span class="number">7</span>, M = <span class="number">2e5</span> + <span class="number">7</span>, V = <span class="number">210</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> x first</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> y second</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> h[<span class="number">4</span> * V], e[M], ne[M], idx = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  e[idx] = b;</span><br><span class="line">  ne[idx] = h[a];</span><br><span class="line">  h[a] = idx++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;PII;</span><br><span class="line">PII edge[N];</span><br><span class="line"><span class="type">int</span> hmd[V];</span><br><span class="line"><span class="type">bool</span> is_hmd[V][V];</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"><span class="type">int</span> dfn[N], low[N], times;</span><br><span class="line"><span class="type">int</span> stk[N], top;</span><br><span class="line"><span class="type">bool</span> in_stk[N];</span><br><span class="line"><span class="type">int</span> scc[N], sid;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tarjan</span><span class="params">(<span class="type">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  low[u] = dfn[u] = ++times;</span><br><span class="line">  stk[++top] = u;</span><br><span class="line">  in_stk[u] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = h[u]; i; i = ne[i]) &#123;</span><br><span class="line">    <span class="type">int</span> j = e[i];</span><br><span class="line">    <span class="keyword">if</span> (!dfn[j]) &#123;</span><br><span class="line">      <span class="built_in">tarjan</span>(j);</span><br><span class="line">      low[u] = <span class="built_in">min</span>(low[j], low[u]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (in_stk[j]) &#123;</span><br><span class="line">      low[u] = <span class="built_in">min</span>(dfn[j], low[u]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (low[u] == dfn[u]) &#123;</span><br><span class="line">    <span class="type">int</span> p;</span><br><span class="line">    ++sid;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">      p = stk[top--];</span><br><span class="line">      in_stk[p] = <span class="literal">false</span>;</span><br><span class="line">      scc[p] = sid;</span><br><span class="line">    &#125; <span class="keyword">while</span> (p != u);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">check</span><span class="params">(<span class="type">int</span> i, <span class="type">int</span> j)</span><span class="comment">//相交返回true </span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">int</span> ax = hmd[edge[i].x], ay = hmd[edge[i].y];</span><br><span class="line">  <span class="type">int</span> bx = hmd[edge[j].x], by = hmd[edge[j].y];</span><br><span class="line">  <span class="keyword">if</span> (bx &gt; ax &amp;&amp; bx &lt; ay &amp;&amp; by &gt; ay) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">if</span> (by &gt; ax &amp;&amp; by &lt; ay &amp;&amp; bx &lt; ax) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">solve</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">memset</span>(h, <span class="number">0</span>, <span class="keyword">sizeof</span> h);</span><br><span class="line">  <span class="built_in">memset</span>(is_hmd, <span class="number">0</span>, <span class="keyword">sizeof</span> is_hmd);</span><br><span class="line">  <span class="built_in">memset</span>(dfn, <span class="number">0</span>, <span class="keyword">sizeof</span> dfn);</span><br><span class="line">  <span class="built_in">memset</span>(in_stk, <span class="number">0</span>, <span class="keyword">sizeof</span> stk);</span><br><span class="line">  idx = <span class="number">1</span>; times = <span class="number">0</span>; top = <span class="number">0</span>; sid = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">&quot;%d %d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">  <span class="type">int</span> a, b;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d %d&quot;</span>, &amp;a, &amp;b);</span><br><span class="line">    edge[i] = &#123; a,b &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;a); hmd[a] = <span class="number">1</span>;<span class="comment">//存下当前下标是哈密顿路径的第几个点</span></span><br><span class="line">  <span class="type">int</span> first = a;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;b); hmd[b] = i;</span><br><span class="line">    is_hmd[a][b] = is_hmd[b][a] = <span class="literal">true</span>;<span class="comment">//a,b之间的路径是哈密顿路径</span></span><br><span class="line">    a = b;</span><br><span class="line">  &#125;</span><br><span class="line">  is_hmd[first][a] = is_hmd[a][first] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (m &gt; <span class="number">3</span> * n - <span class="number">6</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="type">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;<span class="comment">//要将原图转换2-sat模型，首先排除掉哈密顿环上的边</span></span><br><span class="line">    <span class="keyword">if</span> (is_hmd[edge[i].x][edge[i].y]) <span class="keyword">continue</span>;</span><br><span class="line">    <span class="keyword">if</span> (hmd[edge[i].x] &lt; hmd[edge[i].y]) edge[++cnt] = edge[i];</span><br><span class="line">    <span class="keyword">else</span> edge[++cnt] = &#123; edge[i].y,edge[i].x &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  m = cnt;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = i + <span class="number">1</span>; j &lt;= m; j++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">check</span>(i, j)) &#123;<span class="comment">//判断边i,j是否相交，在此之前已经保证不存在哈密顿环的边</span></span><br><span class="line">        <span class="built_in">add</span>(i, j + m); <span class="built_in">add</span>(i + m, j);</span><br><span class="line">        <span class="built_in">add</span>(j, i + m); <span class="built_in">add</span>(j + m, i);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">2</span> * m; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!dfn[i]) <span class="built_in">tarjan</span>(i);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (scc[i] == scc[i + m]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">int</span> t; <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;t);</span><br><span class="line">  <span class="keyword">while</span> (t--) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">solve</span>()) <span class="built_in">printf</span>(<span class="string">&quot;YES\n&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">&quot;NO\n&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原图转化$2-sat$ 是根据有相交的边而转化的，根据$m&lt;&#x3D;3n-6$ ,$n&lt;&#x3D;200$ ,假设有”矛盾“的边有400条，转$2-sat$模型后，会有$400*2$个节点（每个节点都有对应的$i+m$）,假设每条边都相交，最多有 $400*400&#x3D;160000$ 个交点，也就是$2-sat$有十六万条有向边。</p>
+<div id="gitalk-container"></div>
+<script>
+const gitalk = new Gitalk({
+  clientID: 'Ov23ctteY5rA6HskBCFV',
+  clientSecret: '2b7f82ef23a3a69db4bf9f59d8ee02836ea2129f',
+  repo: 'xuehuasu.github.io',      // The repository of store comments,
+  owner: 'xuehuasu',
+  admin: ['xuehuasu'],
+  id: location.pathname,      // Ensure uniqueness and length less than 50
+  distractionFreeMode: false  // Facebook-like distraction free mode
+})
+
+<p>gitalk.render(‘gitalk-container’)<br></script></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"> # 算法</a>
+              <a href="/tags/%E5%9B%BE%E8%AE%BA/" rel="tag"> # 图论</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/30/VM%E5%88%9D%E5%A7%8B%E5%8C%96linux%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" rel="prev" title="VM初始化linux网络配置">
+                  <i class="fa fa-angle-left"></i> VM初始化linux网络配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/05/31/vim%E4%B8%8Ebash%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="next" title="vim与bash常用命令">
+                  vim与bash常用命令 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">雪花酥</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">10k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">36 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="总次数 fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","cdn":"//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
