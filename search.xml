@@ -534,4 +534,38 @@ const gitalk = new Gitalk({
         <tag>linux</tag>
       </tags>
   </entry>
+  <entry>
+    <title>操作系统入门与实践</title>
+    <url>/2024/06/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%85%A5%E9%97%A8%E4%B8%8E%E5%AE%9E%E8%B7%B5/</url>
+    <content><![CDATA[<p>CSE.30341</p>
+<span id="more"></span>
+
+<p>来源：<a href="https://www3.nd.edu/~pbui/teaching/cse.30341.fa19">圣母大学 cse.30341</a></p>
+<p>学习过程有不少限制，尤其是资料获取方面，该课程很多资料都不外传，可能是由于该课程内容在目前看来相对落后，很少人讨论，但是跟上流程走一遍能学到不少东西。</p>
+<h1 id="Task-0"><a href="#Task-0" class="headerlink" title="Task 0"></a>Task 0</h1><h2 id="阅读"><a href="#阅读" class="headerlink" title="阅读"></a>阅读</h2><p><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/intro.pdf">操作系统介绍</a></p>
+<div class="pdf-container" data-target="/pdf/intro.pdf" data-height="400px"></div>    
+
+
+<p>参考资料：<br><a href="https://www.51cto.com/article/603104.html">EXT文件系统机制原理详解</a></p>
+<div id="gitalk-container"></div>
+<script>
+const gitalk = new Gitalk({
+  clientID: 'Ov23ctteY5rA6HskBCFV',
+  clientSecret: '2b7f82ef23a3a69db4bf9f59d8ee02836ea2129f',
+  repo: 'xuehuasu.github.io',      // The repository of store comments,
+  owner: 'xuehuasu',
+  admin: ['xuehuasu'],
+  id: location.pathname,      // Ensure uniqueness and length less than 50
+  distractionFreeMode: false  // Facebook-like distraction free mode
+})
+
+<p>gitalk.render(‘gitalk-container’)<br></script></p>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
 </search>

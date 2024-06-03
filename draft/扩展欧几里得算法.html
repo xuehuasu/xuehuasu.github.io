@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/lingan.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/lingan.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/lingan.png">
+  <link rel="mask-icon" href="/images/lingan.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-flat-top.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xuehuasu.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="扩展欧几里得一般用于求二元方程的整数解">
+<meta property="og:type" content="website">
+<meta property="og:title" content="扩展欧几里得算法">
+<meta property="og:url" content="http://xuehuasu.github.io/project/draft/%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95.html">
+<meta property="og:site_name" content="XueHuaSu&#39;s Blog">
+<meta property="og:description" content="扩展欧几里得一般用于求二元方程的整数解">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-01T04:10:29.000Z">
+<meta property="article:modified_time" content="2024-06-01T13:11:58.673Z">
+<meta property="article:author" content="雪花酥">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="数论">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xuehuasu.github.io/project/draft/%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"http://xuehuasu.github.io/project/draft/%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95.html","path":"draft/扩展欧几里得算法.html","title":"扩展欧几里得算法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>扩展欧几里得算法 | XueHuaSu's Blog
+</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">XueHuaSu's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学而时习之，乐乐乐乐乐</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section">首页</a></li><li class="menu-item menu-item-tags"><a href="/tags" rel="section">标签</a></li><li class="menu-item menu-item-categories"><a href="/categories" rel="section">分类</a></li><li class="menu-item menu-item-archives"><a href="/archives" rel="section">归档</a></li><li class="menu-item menu-item-资源"><a href="/resources" rel="section">资源</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%95%B4%E9%99%A4%E4%B8%8E%E5%8F%96%E6%A8%A1"><span class="nav-number">1.</span> <span class="nav-text">1. 整除与取模</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">2. 欧几里得算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%9C%80%E5%A4%A7%E5%85%AC%E7%BA%A6%E6%95%B0%E3%80%81%E6%9C%80%E5%B0%8F%E5%85%AC%E5%80%8D%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">3. 最大公约数、最小公倍数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E7%AE%97%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">4. 扩展欧几里得算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number"></span> <span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-ax-by-n"><span class="nav-number">1.</span> <span class="nav-text">5. ax+by&#x3D;n</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E6%9C%89%E8%A7%A3%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">5.1 有解条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E6%B1%82%E8%A7%A3%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.2.</span> <span class="nav-text">5.2 求解步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">5.3 代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%90%8C%E4%BD%99%E6%96%B9%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">6. 同余方程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%90%8C%E4%BD%99"><span class="nav-number">2.1.</span> <span class="nav-text">1.同余</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%90%8C%E4%BD%99%E6%96%B9%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">2.同余方程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E9%80%86%E5%85%83"><span class="nav-number">3.</span> <span class="nav-text">7. 逆元</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%A4%E6%B3%95%E5%8F%96%E6%A8%A1"><span class="nav-number">3.0.1.</span> <span class="nav-text">除法取模</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="雪花酥"
+      src="/images/head.png">
+  <p class="site-author-name" itemprop="name">雪花酥</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xuehuasu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xuehuasu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="zh-CN"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">扩展欧几里得算法
+</h1>
+
+<div class="post-meta-container">
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <p>扩展欧几里得一般用于求二元方程的整数解</p>
+<span id="more"></span>
+<h2 id="1-整除与取模"><a href="#1-整除与取模" class="headerlink" title="1. 整除与取模"></a>1. 整除与取模</h2><p><strong>先普及一下整除符号“|”</strong><br>对于整数a,b(a≠0),若存在整数k,使b&#x3D;ka,则称a整除b,或b能被a整除,记为<strong>a∣b</strong>。</p>
+<p><strong>然后是取模运算</strong></p>
+<p>取模运算不用说，大家都懂，不过有几条性质希望大家也都明白。</p>
+<p>(a + b) % m &#x3D; (a % m + b % m ) % m;</p>
+<p>(a - b) % m &#x3D; (a % m - b % m ) % m;</p>
+<p>(a * b) % m &#x3D; (a % m * b % m ) % m;</p>
+<p>除法在这里是不成立的: (a &#x2F; b) % m &#x3D; (a % m &#x2F; b % m) % m; 这是错误的</p>
+<h2 id="2-欧几里得算法"><a href="#2-欧几里得算法" class="headerlink" title="2. 欧几里得算法"></a>2. 欧几里得算法</h2><p>$$<br>gcd(a,b)&#x3D;gcd(b,a%b)<br>$$</p>
+<p>证明：</p>
+<p>若a&lt;b,则gcd(a,b)&#x3D;gcd(b,a)&#x3D;gcd(b,a% b),命题成立。</p>
+<p>若a&gt;&#x3D;b,不妨设a&#x3D;q*b+r,其中0≤r&lt;b。显然r&#x3D;a%b。<br>对于a,b的任意公约数d,因为d|a, d|(qb),故d|(a-qb),即d|r,因此d也是b,r的公约数。</p>
+<p>对于b,r的任意公约数k,因为k|b, k|(a-qb) [r&#x3D;a-qb], 故k|a，因此k也是a,b的公约数</p>
+<p>故a,b的公约数集合与b,a%b的公约数集合相同。于是它们的最大公约数自然也相等。<br>如果觉得不自然，请再往下看。</p>
+<p>假设(a,b)&gt;(b,a%b),令d等于a,b的最大公约数，即d&#x3D;(a,b)。</p>
+<p>根据上面的推导可知:d同时也是b,r的公约数,而b,r的最大公约数一定大于等于d，假设不成立。</p>
+<p>假设(a,b)&lt;(b,a%b)，和上面一样的道理，假设不成立。<br>(a,b)既不大于也不小于(b,a%b)，两者相等。</p>
+<h2 id="3-最大公约数、最小公倍数"><a href="#3-最大公约数、最小公倍数" class="headerlink" title="3. 最大公约数、最小公倍数"></a>3. 最大公约数、最小公倍数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">gcd</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span><span class="comment">//最大公约数</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span>(b==<span class="number">0</span>) <span class="keyword">return</span> a;</span><br><span class="line">    <span class="keyword">return</span> gcd(b,a\%b);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//gcd(a,b)=gcd(b,a\%b)=====&gt;&gt;&gt;&gt;&gt;&gt;gcd(a,0)=a;</span></span><br><span class="line"><span class="comment">//(16,24)=(24,16\%24)==&gt;(24,8)=(8,24\%8)=(8,0)=0;</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">lcm</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span><span class="comment">//最小公倍数  = a*b/gcd(a,b)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> a/gcd(a,b)*b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-扩展欧几里得算法"><a href="#4-扩展欧几里得算法" class="headerlink" title="4. 扩展欧几里得算法"></a>4. 扩展欧几里得算法</h2><p>满足ax+by&#x3D;(a,b) 时，可以用扩展欧几里得算法求出一组特解 ( x0 , y0 )</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">ex_gcd</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b,<span class="type">int</span> &amp;x,<span class="type">int</span> &amp;y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(b==<span class="number">0</span>)&#123;</span><br><span class="line">    x=<span class="number">1</span>,y=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="type">int</span> d=<span class="built_in">ex_gcd</span>(b,a\%b,x,y);</span><br><span class="line">    </span><br><span class="line">  <span class="type">int</span> t=x;</span><br><span class="line">    x=y;</span><br><span class="line">    y=t-(a/b)*y;</span><br><span class="line">    <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>$$<br>ax+by &#x3D; bx+(a%b)y &#x3D; ay + ( x -a&#x2F;b*y)b<br>$$</p>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>于是我们可以不断递归至b&#x3D;0，使得<br>$$<br>ax+by&#x3D;(a,0)&#x3D;a,x&#x3D;1,y&#x3D;0;<br>$$</p>
+<h2 id="5-ax-by-n"><a href="#5-ax-by-n" class="headerlink" title="5. ax+by&#x3D;n"></a>5. ax+by&#x3D;n</h2><h3 id="5-1-有解条件"><a href="#5-1-有解条件" class="headerlink" title="5.1 有解条件"></a>5.1 有解条件</h3><p>$$<br>当且仅当n是gcd(a,b)的倍数时，才有整数解。<br>$$</p>
+<h3 id="5-2-求解步骤"><a href="#5-2-求解步骤" class="headerlink" title="5.2 求解步骤"></a>5.2 求解步骤</h3><p>1.判断$ax+by&#x3D;n$ 是否有整数解，有解的条件是 $gcd(a,b)|n$<br>2.求$ax+by&#x3D;d&#x3D;(a,b)$ 的一个解 $(x_0, y_0)$<br>3.在得到的 $ax_0+by_0&#x3D;d$ 两边同时乘 $n&#x2F;d$  得到 $ax_0<em>n&#x2F;d+by_0</em>n&#x2F;d&#x3D;n$<br>4.对照 $ax+by&#x3D;n$ 得到它的一个解 $x&#x3D;x_0*n&#x2F;d$, $y&#x3D;y_0 *n&#x2F;d$<br>5.它的通解表达式为 $x&#x3D;x+b&#x2F;d$,&amp;nbsp $y&#x3D;y-a&#x2F;d$</p>
+<p>如果要求x的最小正整数解，令$t&#x3D;b&#x2F;d$  ，$x&#x3D;(x%t+t)%t$;  求y同理</p>
+<h3 id="5-3-代码"><a href="#5-3-代码" class="headerlink" title="5.3 代码"></a>5.3 代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">solve</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b,<span class="type">int</span> n)</span>  <span class="comment">//ax+by=n</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> x,y;</span><br><span class="line">  <span class="type">int</span> d=exgcd(a,b,x,y);<span class="comment">//x&#x27;,y&#x27;</span></span><br><span class="line">  <span class="keyword">if</span>(n\%d!=<span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    </span><br><span class="line">  x=x*n/d;</span><br><span class="line">  <span class="type">int</span> t=b/d;<span class="comment">//t&lt;0</span></span><br><span class="line">  <span class="keyword">if</span>(t&lt;<span class="number">0</span>) t=-t;</span><br><span class="line">  <span class="keyword">return</span> (x\%t+t)\%t;  <span class="comment">//x和y不一定同时到最小值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="6-同余方程"><a href="#6-同余方程" class="headerlink" title="6. 同余方程"></a>6. 同余方程</h2><h3 id="1-同余"><a href="#1-同余" class="headerlink" title="1.同余"></a>1.同余</h3><p>两个整数a、b和正整数m ，如果a除以m所得的余数和b除以m所得的余数相等，即a %m&#x3D;b%m.</p>
+<p>称a和b对于m同余.m称为同余的模。同余的概念也可以这样理解: m l(a-b)。即a-b是m的整数倍。</p>
+<p>例如 6|(16-4）16和4对6同余。同余的符号记为<br>$$<br>a \equiv b(mod \quad m)<br>$$</p>
+<h3 id="2-同余方程"><a href="#2-同余方程" class="headerlink" title="2.同余方程"></a>2.同余方程</h3><p>$$<br>ax \equiv b(mod \quad m)<br>$$</p>
+<p>$$<br>ax-b 是m的整数倍，即满足ax-b&#x3D;my \ \ 其中y可以是负数\<br>于是可以改写为 ax+my&#x3D;b<br>$$<br>于是解同余方程就变成了求解二元一次不定方程，用扩展欧几里得算法，有解条件是gcd(a,m)能整除b</p>
+<h2 id="7-逆元"><a href="#7-逆元" class="headerlink" title="7. 逆元"></a>7. 逆元</h2><p>什么是逆元？百度百科：<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E9%80%86%E5%85%83%E7%B4%A0?fromtitle=%E9%80%86%E5%85%83&fromid=11054145">逆元</a> </p>
+<p>这里只讨论我们需要的乘法逆元：<br>$$<br>满足ax \equiv 1(mod \ m)的x，称为a在模m下的逆元，即ax模m等于1<br>$$</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ax+my=<span class="number">1</span></span><br><span class="line">ax+by=n=<span class="number">1</span></span><br><span class="line"><span class="type">int</span> slove(<span class="type">int</span> a,<span class="type">int</span> m)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> x,y;</span><br><span class="line">  exgcd(a,m,x,y);</span><br><span class="line">  <span class="keyword">return</span> (x\%m+m)\%m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="除法取模"><a href="#除法取模" class="headerlink" title="除法取模"></a>除法取模</h4><p><strong>逆元有什么用？</strong> </p>
+<p>求(a&#x2F;b)%m时，当a,b是很大的数时，作除法会损失精度</p>
+<p>使用逆元可以避免除法：设k是b的逆元，则bk%m&#x3D;1</p>
+<p>$$<br>(\frac{a}{b}%m)&#x3D;(\frac{a}{b}%m)*bk%m&#x3D;ak%m<br>$$</p>
+<p>于是a&#x2F;b就变成了ak，是不是很nice</p>
+<div id="gitalk-container"></div>
+<script>
+const gitalk = new Gitalk({
+  clientID: 'Ov23ctteY5rA6HskBCFV',
+  clientSecret: '2b7f82ef23a3a69db4bf9f59d8ee02836ea2129f',
+  repo: 'xuehuasu.github.io',      // The repository of store comments,
+  owner: 'xuehuasu',
+  admin: ['xuehuasu'],
+  id: location.pathname,      // Ensure uniqueness and length less than 50
+  distractionFreeMode: false  // Facebook-like distraction free mode
+})
+
+<p>gitalk.render(‘gitalk-container’)<br></script></p>
+
+      </div>
+      
+      
+      
+    </div>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">雪花酥</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">10k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">37 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="总次数 fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.12/pdfobject.min.js","integrity":"sha256-g2xji1rlE3KsGVClvuxTbcR0Kn2+wtQADSff2Tbb4zA="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","single_dollars":true,"cjk_width":0.9,"normal_width":0.6,"append_css":true,"every_page":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
