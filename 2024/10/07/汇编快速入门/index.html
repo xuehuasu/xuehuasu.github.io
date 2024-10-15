@@ -21,28 +21,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"xuehuasu.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="CSE.30341">
+    <meta name="description" content="首先看懂汇编">
 <meta property="og:type" content="article">
-<meta property="og:title" content="操作系统入门与实践">
-<meta property="og:url" content="http://xuehuasu.github.io/project/2024/06/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%85%A5%E9%97%A8%E4%B8%8E%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:title" content="汇编快速入门">
+<meta property="og:url" content="http://xuehuasu.github.io/project/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="XueHuaSu&#39;s Blog">
-<meta property="og:description" content="CSE.30341">
+<meta property="og:description" content="首先看懂汇编">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-02T02:43:38.000Z">
-<meta property="article:modified_time" content="2024-06-03T14:53:12.621Z">
+<meta property="og:image" content="http://xuehuasu.github.io/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/ZN-CH.png">
+<meta property="og:image" content="http://xuehuasu.github.io/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/linux%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E5%8C%BA.png">
+<meta property="article:published_time" content="2024-10-07T07:12:32.000Z">
+<meta property="article:modified_time" content="2024-10-15T14:28:21.797Z">
 <meta property="article:author" content="雪花酥">
-<meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xuehuasu.github.io/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/ZN-CH.png">
 
 
-<link rel="canonical" href="http://xuehuasu.github.io/project/2024/06/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%85%A5%E9%97%A8%E4%B8%8E%E5%AE%9E%E8%B7%B5/">
+<link rel="canonical" href="http://xuehuasu.github.io/project/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xuehuasu.github.io/project/2024/06/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%85%A5%E9%97%A8%E4%B8%8E%E5%AE%9E%E8%B7%B5/","path":"2024/06/02/操作系统入门与实践/","title":"操作系统入门与实践"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xuehuasu.github.io/project/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/","path":"2024/10/07/汇编快速入门/","title":"汇编快速入门"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>操作系统入门与实践 | XueHuaSu's Blog</title>
+<title>汇编快速入门 | XueHuaSu's Blog</title>
   
 
 
@@ -142,7 +144,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Task-0"><span class="nav-number">1.</span> <span class="nav-text">Task 0</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%85%E8%AF%BB"><span class="nav-number">1.1.</span> <span class="nav-text">阅读</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">基础操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%83%E6%89%8Bdemo"><span class="nav-number">3.</span> <span class="nav-text">练手demo</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -157,18 +159,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -200,7 +202,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://xuehuasu.github.io/project/2024/06/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%85%A5%E9%97%A8%E4%B8%8E%E5%AE%9E%E8%B7%B5/">
+    <link itemprop="mainEntityOfPage" href="http://xuehuasu.github.io/project/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/head.png">
@@ -213,12 +215,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="操作系统入门与实践 | XueHuaSu's Blog">
+      <meta itemprop="name" content="汇编快速入门 | XueHuaSu's Blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          操作系统入门与实践
+          汇编快速入门
         </h1>
 
         <div class="post-meta-container">
@@ -229,23 +231,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2024-06-02 10:43:38" itemprop="dateCreated datePublished" datetime="2024-06-02T10:43:38+08:00">2024-06-02</time>
+      <time title="创建时间：2024-10-07 15:12:32" itemprop="dateCreated datePublished" datetime="2024-10-07T15:12:32+08:00">2024-10-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-06-03 22:53:12" itemprop="dateModified" datetime="2024-06-03T22:53:12+08:00">2024-06-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
-        </span>
+      <time title="修改时间：2024-10-15 22:28:21" itemprop="dateModified" datetime="2024-10-15T22:28:21+08:00">2024-10-15</time>
     </span>
 
   
@@ -262,14 +255,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>153</span>
+      <span>1.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -279,17 +272,103 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>CSE.30341</p>
+    <div class="post-body" itemprop="articleBody"><p>首先看懂汇编</p>
 <span id="more"></span>
+<p>之前玩过图灵完备，实现了一些简单的寄存器、CPU、栈。能够进行函数的call和ret等基础操作，所以理解的快一些，这篇文章目前不打算介绍概念，直接上代码。<br>本文使用MASM编程。</p>
+<h2 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a>基础操作</h2><p>在 MASM 的 <code>debug</code> 工具中，这些指令的英文缩写通常代表以下含义：</p>
+<ol>
+<li><p>R：Registers，查看或修改寄存器内容。</p>
+</li>
+<li><p>D：Dump，查看内存内容。</p>
+</li>
+<li><p>E：Enter data，改写内存内容。</p>
+</li>
+<li><p>U：Unassemble，查看内存内容对应的汇编指令。</p>
+</li>
+<li><p>T：Trace，执行指令。</p>
+</li>
+<li><p>A：Assemble，改写内存内容（从指令角度）。</p>
+</li>
+</ol>
+<img src="/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/ZN-CH.png" class="" title="汇编快速入门">
 
-<p>来源：<a target="_blank" rel="noopener" href="https://www3.nd.edu/~pbui/teaching/cse.30341.fa19">圣母大学 cse.30341</a></p>
-<p>学习过程有不少限制，尤其是资料获取方面，该课程很多资料都不外传，可能是由于该课程内容在目前看来相对落后，很少人讨论，但是跟上流程走一遍能学到不少东西。</p>
-<h1 id="Task-0"><a href="#Task-0" class="headerlink" title="Task 0"></a>Task 0</h1><h2 id="阅读"><a href="#阅读" class="headerlink" title="阅读"></a>阅读</h2><p><a target="_blank" rel="noopener" href="https://pages.cs.wisc.edu/~remzi/OSTEP/intro.pdf">操作系统介绍</a></p>
-<div class="pdf-container" data-target="/pdf/intro.pdf" data-height="400px"></div>    
+<p><strong>寄存器位数:</strong><br>上图中首先可以看到abcd四个寄存器，文字说明如下：<br>ax: 16位<br>al: 低8位<br>ah: 高8位</p>
+<p><strong>四则运算</strong><br>add ax,bx<br>sub ax,bx<br>mul bl:    al * bl &#x3D; ax;   ax * bx &#x3D; dxax;<br>div bl:    ax &#x2F; bl &#x3D; al … ah;  dxax &#x2F; bx &#x3D; ax … dx;<br>加法与乘法低位之间运算溢出后在高位进位，高位的运算溢出后，在dx中补<br>减法与除法也是类似的，低位运算靠ah存余数，高位运算用dx存数</p>
+<p><strong>基本指令</strong><br>xchg ax,bx    交换寄存器内容<br>neg ax        符号取反<br>mov ax,[60]   将ds数据段中偏移为60的数据放在ax<br>mov ds,1234 是不允许的，但是mov ds,ax是允许的<br>jmp 1000:3    跳转指令<br>s结尾的称为段寄存器，不可以用立即数给它赋值</p>
+<p><strong>堆栈操作</strong><br>在linux虚拟内存分区中，栈是从高地址往低地址生长的：</p>
+<img src="/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/linux%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E5%8C%BA.png" class="" title="汇编快速入门">
 
+<p>SS:SP 指向栈顶<br>BX 基址寄存器，[bx] 指向DS:bx<br>BP 基址寄存器，[bp] 指向SS:BP  </p>
+<p><strong>标志位</strong>  </p>
+<ol>
+<li>OF over 溢出 标志位<ul>
+<li>OV overflow</li>
+<li>NV not overflow</li>
+</ul>
+</li>
+<li>DF direction 方向 标志位<ul>
+<li>DN down 减</li>
+<li>UP up</li>
+</ul>
+</li>
+<li>IF interrupt 允许中断 标志位<ul>
+<li>EI enable允许</li>
+<li>DI disable</li>
+</ul>
+</li>
+<li>SF sign 符号 标志位<ul>
+<li>NG  NeGative 负数</li>
+<li>PL  Plus</li>
+</ul>
+</li>
+<li>ZF zero 零 标志位<ul>
+<li>ZR :zero</li>
+<li>NZ :not zero</li>
+</ul>
+</li>
+<li>AF auxiliary 辅助进位 标志位<ul>
+<li>AC assistant carry 进位</li>
+<li>NA no assistant carry 无进位</li>
+</ul>
+</li>
+<li>PF parity 奇偶标志位 <ul>
+<li>PE: even</li>
+<li>PO: odd</li>
+</ul>
+</li>
+<li>CF carry 进位标志位<ul>
+<li>CY  carry yes</li>
+<li>NC  no carry</li>
+<li>adc 加法, 同时加上CF的值  </li>
+<li>sbb 减法, 同时减去CF的值</li>
+</ul>
+</li>
+<li>TF Trap 追踪 标志位<ul>
+<li>当TF为1时，CPU进入单步调试模式，每执行一次指令，产生一次中断请求</li>
+</ul>
+</li>
+</ol>
+<p><strong>条件跳转</strong><br>cmp 相当于不保存结果的减法，通过查看标志位得到cmp结果  </p>
+<blockquote>
+<p>je 等于跳转      zf &#x3D; 1<br>jne 不等于跳转   zf &#x3D; 0<br>jb below 小于   cf &#x3D; 1<br>jnb  不小于     cf &#x3D; 0<br>ja above 大于   cf &#x3D; 0 &amp;&amp; zf &#x3D; 0<br>jna 不大于      cf &#x3D; 1 &amp;&amp; zf &#x3D; 1  </p>
+</blockquote>
+<p>比如：如果ax&gt;&#x3D;bx则跳转：<br>cmp ax,bx<br>jnb 012F:0100  </p>
+<p><strong>直接跳转</strong><br>jmp short s  段内跳转<br>jmp far ptr s  远距离跳转  </p>
+<h2 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h2><p>源代码放在MASM.EXE同级目录下  </p>
+<p>编写源文件code.asm  </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">assume cs:codesg</span><br><span class="line">codesg segment</span><br><span class="line">    &lt;code&gt;</span><br><span class="line">codesg ends</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
 
-<p>参考资料：<br><a target="_blank" rel="noopener" href="https://www.51cto.com/article/603104.html">EXT文件系统机制原理详解</a></p>
-<div id="gitalk-container"></div>
+<p>终端命令:<br>#生成code.obj<br>&gt; masm<br>&gt; code  </p>
+<p>链接，生成code.exe<br>&gt;link<br>&gt;code.obj  </p>
+<p>以debug方式运行：<br>&gt;debug code.exe</p>
+<p><strong>数据定义</strong><br>db： define byte<br>dw： define word<br>dd： define double word<br>dq： define q… word  </p>
+<p>db 10 dup (123)： 定义10个123<br>db 3 dup (1,2,3)：1 2 3 1 2 3 1 2 3</p>
+<p>数据代码分区存储：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">assume cs:codesg,ds:data,ss:stack</span><br><span class="line">data segment</span><br><span class="line">  db <span class="string">&quot;hello world&#x27;</span></span><br><span class="line"><span class="string">  db 3 dup (1,2,3)</span></span><br><span class="line"><span class="string">data ends</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">stack segment</span></span><br><span class="line"><span class="string">  db 10 dup (0)</span></span><br><span class="line"><span class="string">stack ends</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">codesg segment</span></span><br><span class="line"><span class="string">start:</span></span><br><span class="line"><span class="string">  mov ax, 3</span></span><br><span class="line"><span class="string">  mov cx,11</span></span><br><span class="line"><span class="string">  call func</span></span><br><span class="line"><span class="string">  inc bx</span></span><br><span class="line"><span class="string">  int 21H</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">func:</span></span><br><span class="line"><span class="string">  add ax,ax</span></span><br><span class="line"><span class="string">  loop func</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">codesg ends</span></span><br><span class="line"><span class="string">end start</span></span><br></pre></td></tr></table></figure>
+
+<p>offset 获取label所在的位置，比如上述代码中，添加这一行：<br>mov ax,offset func<br>表示将func的地址赋值给ax  </p>
+<p><strong>数组</strong><br>arr db 12,34,56,78  定义一个数据数组<br>mov ax, word ptr arr[2] 将数组2号地址赋值给ax<br>mov word ptr ds:[2],0 将0赋值给内存的2号地址<br>jmp word ptr ds:[0] 读取内存中的第一个数作为跳转目标，修改ip<br>jmp dword ptr ds:[0] 读取内存中的第一个数作为跳转目标, 修改cs:ip  </p>
+<h2 id="练手demo"><a href="#练手demo" class="headerlink" title="练手demo"></a>练手demo</h2><div id="gitalk-container"></div>
 <script>
 const gitalk = new Gitalk({
   clientID: 'Ov23ctteY5rA6HskBCFV',
@@ -310,16 +389,13 @@ const gitalk = new Gitalk({
     
 
     <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"> # 操作系统</a>
-          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/05/31/vim%E4%B8%8Ebash%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="prev" title="vim与bash常用命令">
-                  <i class="fa fa-angle-left"></i> vim与bash常用命令
+                <a href="/2024/09/07/%E5%AE%89%E5%8D%93%E5%BC%80%E5%8F%91-JNI/" rel="prev" title="安卓开发-JNI">
+                  <i class="fa fa-angle-left"></i> 安卓开发-JNI
                 </a>
             </div>
             <div class="post-nav-item">
@@ -353,13 +429,13 @@ const gitalk = new Gitalk({
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">10k</span>
+    <span title="站点总字数">13k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">37 分钟</span>
+    <span title="站点阅读时长">46 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -21,23 +21,31 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"xuehuasu.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="XueHuaSu&#39;s Blog">
-<meta property="og:url" content="http://xuehuasu.github.io/project/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/index.html">
+    <meta name="description" content="CS入门">
+<meta property="og:type" content="website">
+<meta property="og:title" content="linux内核入门">
+<meta property="og:url" content="http://xuehuasu.github.io/project/draft/linux%E5%86%85%E6%A0%B8%E5%85%A5%E9%97%A8.html">
 <meta property="og:site_name" content="XueHuaSu&#39;s Blog">
+<meta property="og:description" content="CS入门">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-02T02:43:38.000Z">
+<meta property="article:modified_time" content="2024-06-28T07:28:54.121Z">
 <meta property="article:author" content="雪花酥">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="内核">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://xuehuasu.github.io/project/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">
+<link rel="canonical" href="http://xuehuasu.github.io/project/draft/linux%E5%86%85%E6%A0%B8%E5%85%A5%E9%97%A8">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"categories/操作系统/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"http://xuehuasu.github.io/project/draft/linux%E5%86%85%E6%A0%B8%E5%85%A5%E9%97%A8.html","path":"draft/linux内核入门.html","title":"linux内核入门"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>分类: 操作系统 | XueHuaSu's Blog</title>
+<title>linux内核入门 | XueHuaSu's Blog
+</title>
   
 
 
@@ -124,7 +132,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -137,6 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80"><span class="nav-number">1.</span> <span class="nav-text">1. 内存寻址</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -151,18 +160,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -183,50 +192,53 @@
 
     </div>
 
-    <div class="main-inner category posts-collapse">
+    <div class="main-inner page posts-expand">
 
 
-  
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">操作系统
-          <small>分类</small>
-        </h1>
-      </div>
+    
+    
+    
+    <div class="post-block" lang="zh-CN"><header class="post-header">
 
-      
-    <div class="collection-year">
-      <span class="collection-header">2024</span>
-    </div>
+<h1 class="post-title" itemprop="name headline">linux内核入门
+</h1>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-06-02T10:43:38+08:00"
-              content="2024-06-02">
-          06-02
-        </time>
-      </div>
+<div class="post-meta-container">
+</div>
 
-      <div class="post-title">
-        <a class="post-title-link" href="/2024/06/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%85%A5%E9%97%A8%E4%B8%8E%E5%AE%9E%E8%B7%B5/" itemprop="url">
-          <span itemprop="name">操作系统入门与实践</span>
-        </a>
-      </div>
+</header>
 
       
-    </header>
-  </article>
+      
+      <div class="post-body">
+          <p>CS入门</p>
+<span id="more"></span>
 
+<p>练手项目：<a target="_blank" rel="noopener" href="https://www3.nd.edu/~pbui/teaching/cse.30341.fa19">圣母大学 cse.30341</a></p>
+<p>参考资料：<br>《深入理解linux内核》中文第三版</p>
+<h1 id="1-内存寻址"><a href="#1-内存寻址" class="headerlink" title="1. 内存寻址"></a>1. 内存寻址</h1><div id="gitalk-container"></div>
+<script>
+const gitalk = new Gitalk({
+  clientID: 'Ov23ctteY5rA6HskBCFV',
+  clientSecret: '2b7f82ef23a3a69db4bf9f59d8ee02836ea2129f',
+  repo: 'xuehuasu.github.io',      // The repository of store comments,
+  owner: 'xuehuasu',
+  admin: ['xuehuasu'],
+  id: location.pathname,      // Ensure uniqueness and length less than 50
+  distractionFreeMode: false  // Facebook-like distraction free mode
+})
+
+<p>gitalk.render(‘gitalk-container’)<br></script></p>
+
+      </div>
+      
+      
+      
     </div>
-  </div>
-  
-  
-  
+
+    
+    
+
 
 </div>
   </main>
@@ -247,13 +259,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">10k</span>
+    <span title="站点总字数">13k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">37 分钟</span>
+    <span title="站点阅读时长">46 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
@@ -314,7 +326,7 @@
 
   
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","single_dollars":true,"cjk_width":0.9,"normal_width":0.6,"append_css":true,"every_page":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","single_dollars":true,"cjk_width":0.9,"normal_width":0.6,"append_css":true,"every_page":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
 <script src="/js/third-party/math/mathjax.js"></script>
 
 

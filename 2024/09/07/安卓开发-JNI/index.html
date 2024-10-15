@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/lingan.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/lingan.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/lingan.png">
+  <link rel="mask-icon" href="/images/lingan.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-flat-top.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xuehuasu.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java Native Interface">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安卓开发-JNI">
+<meta property="og:url" content="http://xuehuasu.github.io/project/2024/09/07/%E5%AE%89%E5%8D%93%E5%BC%80%E5%8F%91-JNI/index.html">
+<meta property="og:site_name" content="XueHuaSu&#39;s Blog">
+<meta property="og:description" content="Java Native Interface">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-09-07T04:25:18.000Z">
+<meta property="article:modified_time" content="2024-10-15T15:09:33.661Z">
+<meta property="article:author" content="雪花酥">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xuehuasu.github.io/project/2024/09/07/%E5%AE%89%E5%8D%93%E5%BC%80%E5%8F%91-JNI/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xuehuasu.github.io/project/2024/09/07/%E5%AE%89%E5%8D%93%E5%BC%80%E5%8F%91-JNI/","path":"2024/09/07/安卓开发-JNI/","title":"安卓开发-JNI"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>安卓开发-JNI | XueHuaSu's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">XueHuaSu's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学而时习之，乐乐乐乐乐</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section">首页</a></li><li class="menu-item menu-item-tags"><a href="/tags" rel="section">标签</a></li><li class="menu-item menu-item-categories"><a href="/categories" rel="section">分类</a></li><li class="menu-item menu-item-archives"><a href="/archives" rel="section">归档</a></li><li class="menu-item menu-item-资源"><a href="/resources" rel="section">资源</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE-linux"><span class="nav-number">1.</span> <span class="nav-text">环境配置-linux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JNI%E7%BC%96%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">JNI编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="nav-number">2.1.</span> <span class="nav-text">前期准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">开始编程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.1.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92"><span class="nav-number">2.2.2.</span> <span class="nav-text">参数传递</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%8C%85JNI"><span class="nav-number">3.</span> <span class="nav-text">打包JNI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8JNI"><span class="nav-number">4.</span> <span class="nav-text">使用JNI</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="雪花酥"
+      src="/images/head.png">
+  <p class="site-author-name" itemprop="name">雪花酥</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xuehuasu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xuehuasu" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xuehuasu.github.io/project/2024/09/07/%E5%AE%89%E5%8D%93%E5%BC%80%E5%8F%91-JNI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/head.png">
+      <meta itemprop="name" content="雪花酥">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XueHuaSu's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="安卓开发-JNI | XueHuaSu's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          安卓开发-JNI
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-09-07 12:25:18" itemprop="dateCreated datePublished" datetime="2024-09-07T12:25:18+08:00">2024-09-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-10-15 23:09:33" itemprop="dateModified" datetime="2024-10-15T23:09:33+08:00">2024-10-15</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="次数 far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Java Native Interface</p>
+<span id="more"></span>
+<h2 id="环境配置-linux"><a href="#环境配置-linux" class="headerlink" title="环境配置-linux"></a>环境配置-linux</h2><p>需要配置java，ndk，gcc，在linux上配置这些相对简单，直接apt install即可。</p>
+<h2 id="JNI编程"><a href="#JNI编程" class="headerlink" title="JNI编程"></a>JNI编程</h2><p>项目代码建议放在linux下，windows编译的产物和中间件产物有冲突，本文介绍的也是使用linux编译，后续涉及的所有命令行操作都推荐在linux上执行。</p>
+<p>一般我们对JNI进行如下分层：</p>
+<p>Java应用层: Java代码部分，包括调用JNI方法的业务逻辑。<br>JNI接口层: Java与本地代码交互的接口，这一层包括Java中的声明和调用native方法。<br>JNI库层: 提供JNI函数和数据类型的库，实现了JNI接口的底层实现。<br>本地代码层: 通常是用C或C++编写的代码，它们实现了实际的业务功能。<br>Java虚拟机（JVM）层: JVM管理Java程序的执行。<br>JNI接口层  将需要和C++对接的函数声明为native  </p>
+<h3 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h3><p><strong>使用System.loadLibrary加载native库</strong>  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Jni.java: </span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Jni</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">native</span> String <span class="title function_">isEmpty</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">native</span> <span class="type">boolean</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> idx, <span class="type">int</span> num)</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">native</span> <span class="type">boolean</span> <span class="title function_">addVec</span><span class="params">(<span class="type">int</span> idx, MyVec vec)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">&quot;myvec&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JNI库层</strong></p>
+<p>将JNI接口层的.java文件导出为.h文件</p>
+<p>javac -h .&#x2F; -cp .&#x2F;java .&#x2F;java&#x2F;com&#x2F;example&#x2F;projectName&#x2F;jni&#x2F;Jni.java   </p>
+<p>选项说明：</p>
+<p>-h    指定头文件生成目录为当前目录<br>-cp  指定类路径(classpath)为.&#x2F;java目录<br>最后指定类文件为Jni.java</p>
+<p>将得到的.h文件放到jni目录下，jni目录一般和app平级，一般我们会得到类似这样的函数声明：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* Class: com_example_projectName_jni_Jni</span></span><br><span class="line"><span class="comment">* Method: isEmpty</span></span><br><span class="line"><span class="comment">* Signature: ()Ljava/lang/String;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_com_example_projectName_jni_Jni_isEmpty</span></span></span><br><span class="line"><span class="function"><span class="params">(JNIEnv *, jobject)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* Class: com_example_projectName_jni_Jni</span></span><br><span class="line"><span class="comment">* Method: add</span></span><br><span class="line"><span class="comment">* Signature: (II)Z</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function">JNIEXPORT jboolean JNICALL <span class="title">Java_com_example_projectName_jni_Jni_add</span></span></span><br><span class="line"><span class="function"><span class="params">(JNIEnv *, jobject, jint, jint)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* Class: com_example_projectName_jni_Jni</span></span><br><span class="line"><span class="comment">* Method: addVec</span></span><br><span class="line"><span class="comment">* Signature: (ILcom/example/projectName/utils/MyVec;)Z</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function">JNIEXPORT jboolean JNICALL <span class="title">Java_com_example_projectName_jni_Jni_addVec</span></span></span><br><span class="line"><span class="function"><span class="params">(JNIEnv *, jobject, jint, jint, jobject, jobject)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>下一步将.h复制一份，改为.c，后续我们就修改.c的内容。</p>
+<h3 id="开始编程"><a href="#开始编程" class="headerlink" title="开始编程"></a>开始编程</h3><h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><table>
+<thead>
+<tr>
+<th>Java类型</th>
+<th>本地类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean</td>
+<td>jboolean</td>
+<td>C&#x2F;C++ 8位整型</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>jbyte</td>
+<td>C&#x2F;C++ 带符号的8位整型</td>
+</tr>
+<tr>
+<td>char</td>
+<td>jchar</td>
+<td>C&#x2F;C++ 无符号的16位整型</td>
+</tr>
+<tr>
+<td>short</td>
+<td>jshort</td>
+<td>C&#x2F;C++ 带符号的16位整型</td>
+</tr>
+<tr>
+<td>int</td>
+<td>jint</td>
+<td>C&#x2F;C++ 带符号的32位整型</td>
+</tr>
+<tr>
+<td>long</td>
+<td>jlong</td>
+<td>C&#x2F;C++ 带符号的64位整型</td>
+</tr>
+<tr>
+<td>float</td>
+<td>jfloat</td>
+<td>C&#x2F;C++ 32位浮点型</td>
+</tr>
+<tr>
+<td>double</td>
+<td>jdouble</td>
+<td>C&#x2F;C++ 64位浮点型</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>jobject</td>
+<td>任何Java对象，或者没有对应Java类型的对象</td>
+</tr>
+<tr>
+<td>Class</td>
+<td>jclass</td>
+<td>Class对象</td>
+</tr>
+<tr>
+<td>String</td>
+<td>jstring</td>
+<td>字符串对象</td>
+</tr>
+<tr>
+<td>Object[]</td>
+<td>jobjectArray</td>
+<td>任何对象的数组</td>
+</tr>
+<tr>
+<td>boolean[]</td>
+<td>jbooleanArray</td>
+<td>布尔型数组</td>
+</tr>
+<tr>
+<td>byte[]</td>
+<td>jbyteArray</td>
+<td>比特型数组</td>
+</tr>
+<tr>
+<td>char[]</td>
+<td>jcharArray</td>
+<td>字符型数组</td>
+</tr>
+<tr>
+<td>short[]</td>
+<td>jshortArray</td>
+<td>短整型数组</td>
+</tr>
+<tr>
+<td>int[]</td>
+<td>jintArray</td>
+<td>整型数组</td>
+</tr>
+<tr>
+<td>long[]</td>
+<td>jlongArray</td>
+<td>长整型数组</td>
+</tr>
+<tr>
+<td>float[]</td>
+<td>jfloatArray</td>
+<td>浮点型数组</td>
+</tr>
+<tr>
+<td>double[]</td>
+<td>jdoubleArray</td>
+<td>双浮点型数组</td>
+</tr>
+</tbody></table>
+<p>注意Boolean是Object，在java应用中我们经常将Integer或Boolean直接当作基本数据类型使用，但是在JNI项目中必须严格区分它们。</p>
+<h4 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h4><p>分为两种类型，第一种从java传到JNI的传入参数，第二种将参数return或者回传</p>
+<p><strong>传入参数</strong></p>
+<p>基本数据类型比如int→jint能直接传递，但是引用类型Integer必须用jobject接收，经过解析后才能得到对应的值，比如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">JNIEXPORT jboolean JNICALL <span class="title function_">Java_com_example_projectName_jni_Jni_addVec</span><span class="params">(JNIEnv *env, jobject thiz, jint idx, jobject vec)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 开发中</span></span><br><span class="line">    <span class="keyword">return</span> JNI_TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>回传参数和return值</strong></p>
+<p>上文中，直接返回了基本数据类型jboolean，对应java的boolean（注意不是Boolean），一般返回值都使用布尔值而不是引用类型，而如果需要返回多个参数的情况下，可以返回自定义类型或者使用参数回传的方式</p>
+<p>参数回传只能使用引用类型（基本数据类型使用指针类型可以回传），如下，演示如何返回引用类型</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">JNIEXPORT jboolean JNICALL <span class="title function_">Java_com_example_projectName_jni_Jni_addVec</span><span class="params">(JNIEnv *env, jobject thiz, jint idx, jobject vec)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 开发中</span></span><br><span class="line">    <span class="keyword">return</span> JNI_TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再给一个修改数组并回传的示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">JNIEXPORT jboolean JNICALL <span class="title function_">Java_com_example_projectName_jni_Jni_addVec</span><span class="params">(JNIEnv *env, jobject thiz, jint idx, jobject vec)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 开发中</span></span><br><span class="line">    <span class="keyword">return</span> JNI_TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个释放操作有点意思，函数原型：</p>
+<p>void ReleaseIntArrayElements(JNIEnv *env, jintArray array, jint *elems, jint mode);</p>
+<p>env: JNI 环境指针，用于调用 JNI 函数。</p>
+<p>array: 要释放的 Java 数组。</p>
+<p>elems: 之前通过 GetIntArrayElements 获取的本地数组指针。</p>
+<p>mode: 释放模式，这个参数有以下几种取值：</p>
+<p>0: 复制回 Java 数组并释放本地数组。<br>JNI_COMMIT: 复制回 Java 数组但不释放本地数组（数组仍然可供本地代码访问）。<br>JNI_ABORT: 不复制回 Java 数组，只释放本地数组。</p>
+<h2 id="打包JNI"><a href="#打包JNI" class="headerlink" title="打包JNI"></a>打包JNI</h2><p>在上一章我们得到了Jni.java，以及.c和.h文件，java代码将打包为jar包，作为JNI接口层给应用使用；而c代码将打包为.so，也就是上文的JNI库。</p>
+<p>（一）打jar包</p>
+<p>我有两个目录需要打包：jni&#x2F;Jni.java，Tutils&#x2F;.*java，打包过程如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">javac -parameters -d classes jni/Jni.java utils<span class="comment">/*.java</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">jar cf Jni.jar -C classes/ .</span></span><br><span class="line"><span class="comment"></span></span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<p>-parameters 保留函数参数名</p>
+<p>-d 指定生成目录</p>
+<p>cf 创建新文件并指定文件名</p>
+<p>-C classes&#x2F; . 将classes目录中的所有文件打包</p>
+<p>（二)  编译JNI库</p>
+<p>jni库结构如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">project\jni\include\xxx.h</span><br><span class="line"></span><br><span class="line">project\jni\libs\armeabi-v7a\libxxx.so</span><br><span class="line"></span><br><span class="line">project\jni\Android.mk</span><br><span class="line"></span><br><span class="line">project\jni\Application.mk</span><br><span class="line"></span><br><span class="line">project\jni\projectName_jni.c</span><br><span class="line"></span><br><span class="line">project\jni\projectName_jni.h</span><br></pre></td></tr></table></figure>
+
+
+
+<p>推荐在linux上使用ndk-build编译，需要编写两个mk文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//==========Application.mk</span><br><span class="line"></span><br><span class="line">APP_ABI := armeabi-v7a </span><br><span class="line">APP_PLATFORM := android-29</span><br><span class="line">NDK_TOOLCHAIN_VERSION := clang</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//=========Anroid.mk</span><br><span class="line"></span><br><span class="line">LOCAL_PATH := $(call my-dir)</span><br><span class="line"></span><br><span class="line"># 定义头文件搜索路径和动态库搜索路径</span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)  </span><br><span class="line">LOCAL_MODULE := libadd</span><br><span class="line">LOCAL_SRC_FILES := libs/$(TARGET_ARCH_ABI)/libadd.so      </span><br><span class="line">LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include  </span><br><span class="line">LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)/include</span><br><span class="line">include $(PREBUILT_SHARED_LIBRARY)</span><br><span class="line"></span><br><span class="line">...&lt;重复上一段，可定义多个库&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_CFLAGS      = -CFLAGS ...  # 编译选项</span><br><span class="line">LOCAL_LDLIBS      += -llog           #系统动态库</span><br><span class="line">LOCAL_MODULE     := projectName      # 目标产物名称</span><br><span class="line"></span><br><span class="line">#其它头文件搜索路径</span><br><span class="line"></span><br><span class="line">LOCAL_C_INCLUDES := $(LOCAL_PATH)       </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 源文件路径</span><br><span class="line">LOCAL_SRC_FILES := \</span><br><span class="line">          projectName_jni.c \ </span><br><span class="line"></span><br><span class="line"># 链接上方声明的动态库，比如我需要链接libadd.so</span><br><span class="line"></span><br><span class="line">LOCAL_SHARED_LIBRARIES := libadd </span><br><span class="line"></span><br><span class="line">#编译成动态库</span><br><span class="line"></span><br><span class="line">include $(BUILD_SHARED_LIBRARY)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>在jni目录下: ndk-build</p>
+<p>生成的产物默认出现在jni同级的libs目录中，一般类似libs&#x2F;armeabi-v7a&#x2F;libxxx.so的形式。</p>
+<h2 id="使用JNI"><a href="#使用JNI" class="headerlink" title="使用JNI"></a>使用JNI</h2><p>上一章中，得到了一个jar包和一个.so</p>
+<p>将jar包放到app下的libs中，有必要的话右键该jar包并add as library</p>
+<p>将.so放到app平级的Jnilibs中（如果没有的就新建），或者通过修改build.gradle的相关配置，比如设置为app下的libs:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sourceSets &#123;</span><br><span class="line">    main&#123;</span><br><span class="line">        main.jni.srcDirs = []</span><br><span class="line">        main.jniLibs.srcDirs = [<span class="string">&#x27;libs&#x27;</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<div id="gitalk-container"></div>
+<script>
+const gitalk = new Gitalk({
+  clientID: 'Ov23ctteY5rA6HskBCFV',
+  clientSecret: '2b7f82ef23a3a69db4bf9f59d8ee02836ea2129f',
+  repo: 'xuehuasu.github.io',      // The repository of store comments,
+  owner: 'xuehuasu',
+  admin: ['xuehuasu'],
+  id: location.pathname,      // Ensure uniqueness and length less than 50
+  distractionFreeMode: false  // Facebook-like distraction free mode
+})
+
+<p>gitalk.render(‘gitalk-container’)<br></script></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/31/vim%E4%B8%8Ebash%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="prev" title="vim与bash常用命令">
+                  <i class="fa fa-angle-left"></i> vim与bash常用命令
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/10/07/%E6%B1%87%E7%BC%96%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" rel="next" title="汇编快速入门">
+                  汇编快速入门 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">雪花酥</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">13k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">46 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="总次数 fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.12/pdfobject.min.js","integrity":"sha256-g2xji1rlE3KsGVClvuxTbcR0Kn2+wtQADSff2Tbb4zA="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","single_dollars":true,"cjk_width":0.9,"normal_width":0.6,"append_css":true,"every_page":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
